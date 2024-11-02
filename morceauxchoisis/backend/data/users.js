@@ -18,3 +18,5 @@ const users = [
     isAdmin: false,
   },
 ];
+
+export { users };

@@ -25,4 +25,16 @@ export const userTypeDefs = `#graphql
     users: [User]
     user(id: ID!): User
   }
+
+  type AuthPayload {
+    token: String!
+    user: User!
+  }
+
+  type Mutation {
+    login(email: String!, password: String!): AuthPayload!
+    register(input: UserInput!): AuthPayload!
+    updateUser(id: ID!, input: UpdateUserInput!): User!
+    deleteUser(id: ID!): Boolean!
+  }
 `;

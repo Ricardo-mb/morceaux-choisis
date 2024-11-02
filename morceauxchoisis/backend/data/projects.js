@@ -24,3 +24,5 @@ const projects = [
     status: "In Progress",
   },
 ];
+
+export { projects };

@@ -2,8 +2,7 @@ export const PORT = process.env.PORT || 5000;
 
 // MongoDB
 export const MONGODB_URI =
-  process.env.MONGODB_URI || "mongodb://localhost:27017/graphql-basics";
-
+  process.env.MONGODB_URI || process.env.MONGODB_URI
 // Project Status
 export const PROJECT_STATUS = {
   IN_PROGRESS: "In Progress",

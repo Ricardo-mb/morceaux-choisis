@@ -4,21 +4,40 @@ export const validateEmail = (email) => {
 };
 
 export const validatePassword = (password) => {
-  return password.length >= 6;
+  const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
+  return passwordRegex.test(password);
 };
 
 export const validateUserInput = (name, email, password) => {
-  if (!name || !email || !password) {
-    return "All fields are required";
+  const errors = [];
+
+  if (!name || name.trim().length < 2) {
+    errors.push("Name must be at least 2 characters long");
   }
 
-  if (!validateEmail(email)) {
-    return "Invalid email format";
+  if (!email || !validateEmail(email)) {
+    errors.push("Please provide a valid email address");
   }
 
-  if (!validatePassword(password)) {
-    return "Password must be at least 6 characters long";
+  if (!password || !validatePassword(password)) {
+    errors.push(
+      "Password must be at least 8 characters long and contain at least one letter and one number"
+    );
   }
 
-  return null;
+  return errors.length > 0 ? errors.join(", ") : null;
+};
+
+export const validateLoginInput = (email, password) => {
+  const errors = [];
+
+  if (!email || !validateEmail(email)) {
+    errors.push("Please provide a valid email address");
+  }
+
+  if (!password || password.trim().length === 0) {
+    errors.push("Password is required");
+  }
+
+  return errors.length > 0 ? errors.join(", ") : null;
 };

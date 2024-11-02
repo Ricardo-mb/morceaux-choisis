@@ -1,4 +1,6 @@
 import mongoose from "mongoose";
+import { hashPassword } from "../utils/auth.js";
+import { USER_ROLES } from "../config/constants.js";
 
 const userSchema = new mongoose.Schema(
   {
@@ -30,11 +32,23 @@ const userSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    role: {
+      type: String,
+      enum: Object.values(USER_ROLES),
+      default: USER_ROLES.USER,
+    },
   },
   {
     timestamps: true,
   }
 );
+
+userSchema.pre("save", async function (next) {
+  if (this.isModified("password")) {
+    this.password = await hashPassword(this.password);
+  }
+  next();
+});
 const User = mongoose.model("User", userSchema);
 
 export { User };

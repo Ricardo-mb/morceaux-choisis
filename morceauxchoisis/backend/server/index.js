@@ -2,7 +2,6 @@ import express from "express";
 import { ApolloServer } from "@apollo/server";
 import { expressMiddleware } from "@apollo/server/express4";
 import cors from "cors";
-import mongoose from "mongoose";
 import dotenv from "dotenv";
 import { typeDefs } from "../graphql/schema/index.js";
 import { resolvers } from "../graphql/resolvers/index.js";
