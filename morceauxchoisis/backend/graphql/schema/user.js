@@ -1,4 +1,10 @@
 export const userTypeDefs = `#graphql
+  type SocialLinks {
+    github: String
+    linkedin: String
+    twitter: String
+  }
+
   type User {
     id: ID!
     name: String!
@@ -7,18 +13,37 @@ export const userTypeDefs = `#graphql
     createdAt: String!
     updatedAt: String!
     isAdmin: Boolean!
+    role: String!
+    avatar: String
+    bio: String
+    skills: [String]
+    socialLinks: SocialLinks
+  }
+
+  input SocialLinksInput {
+    github: String
+    linkedin: String
+    twitter: String
   }
 
   input UserInput {
     name: String!
     email: String!
     password: String!
+    avatar: String
+    bio: String
+    skills: [String]
+    socialLinks: SocialLinksInput
   }
 
   input UpdateUserInput {
     name: String
     email: String
     password: String
+    avatar: String
+    bio: String
+    skills: [String]
+    socialLinks: SocialLinksInput
   }
 
   type Query {
@@ -35,6 +60,7 @@ export const userTypeDefs = `#graphql
     login(email: String!, password: String!): AuthPayload!
     register(input: UserInput!): AuthPayload!
     updateUser(id: ID!, input: UpdateUserInput!): User!
+    updateAdminPassword(email: String!, newPassword: String!): AuthPayload!
     deleteUser(id: ID!): Boolean!
   }
 `;

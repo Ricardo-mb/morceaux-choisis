@@ -37,12 +37,26 @@ const userSchema = new mongoose.Schema(
       enum: Object.values(USER_ROLES),
       default: USER_ROLES.USER,
     },
+    avatar: { type: String },
+    bio: { type: String },
+    skills: [{ type: String }],
+    socialLinks: {
+      github: { type: String },
+      linkedin: { type: String },
+      twitter: { type: String },
+    },
+    lastLogin: { type: Date },
+    loginCount: { type: Number, default: 0 },
+    accountStatus: {
+      type: String,
+      enum: ["active", "suspended", "inactive"],
+      default: "active",
+    },
   },
   {
     timestamps: true,
   }
 );
-
 userSchema.pre("save", async function (next) {
   if (this.isModified("password")) {
     this.password = await hashPassword(this.password);
