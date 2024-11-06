@@ -1,14 +1,12 @@
 export const PORT = process.env.PORT || 5000;
 
 // MongoDB
-export const MONGODB_URI =
-  process.env.MONGODB_URI || process.env.MONGODB_URI
+export const MONGODB_URI = process.env.MONGODB_URI || process.env.MONGODB_URI;
 // Project Status
 export const PROJECT_STATUS = {
-  IN_PROGRESS: "In Progress",
-  COMPLETED: "Completed",
-  ON_HOLD: "On Hold",
-  CANCELLED: "Cancelled",
+  IN_PROGRESS: "IN_PROGRESS",
+  COMPLETED: "COMPLETED",
+  ON_HOLD: "ON_HOLD",
 };
 
 // User Roles

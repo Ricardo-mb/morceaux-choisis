@@ -2,7 +2,7 @@ import { PROJECT_STATUS } from "../../config/constants.js";
 
 export const projectTypeDefs = `#graphql
   enum ProjectStatus {
-    ${Object.values(PROJECT_STATUS).join("\n    ")}
+    ${Object.values(PROJECT_STATUS).join(" ")} 
   }
 
   type Project {
@@ -12,6 +12,7 @@ export const projectTypeDefs = `#graphql
     imageUrl: String!
     projectUrl: String!
     status: ProjectStatus!
+    createdAt: String!
   }
 
   input ProjectFilters {
@@ -38,5 +39,11 @@ export const projectTypeDefs = `#graphql
   type Query {
     projects(filters: ProjectFilters): [Project]
     project(id: ID!): Project
+  }
+
+  type Mutation {
+    createProject(project: ProjectInput!): Project
+    updateProject(id: ID!, project: UpdateProjectInput!): Project
+    deleteProject(id: ID!): Project
   }
 `;

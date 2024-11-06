@@ -61,6 +61,17 @@ export const userTypeDefs = `#graphql
     register(input: UserInput!): AuthPayload!
     updateUser(id: ID!, input: UpdateUserInput!): User!
     updateAdminPassword(email: String!, newPassword: String!): AuthPayload!
+    updateUserPassword(email: String!, newPassword: String!): AuthPayload!
     deleteUser(id: ID!): Boolean!
+  }
+
+
+  scalar  Upload
+
+  extend type Mutation {
+    uploadImage(file: Upload!): String!
+    updateUserAvatar(file: Upload!): String!
+    uploadProjectImage(file: Upload!, projectId: ID!): String!
+    deleteUserAvatar: Boolean!
   }
 `;

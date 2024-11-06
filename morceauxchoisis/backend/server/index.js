@@ -7,6 +7,8 @@ import dotenv from "dotenv";
 import { typeDefs } from "../graphql/schema/index.js";
 import { resolvers } from "../graphql/resolvers/index.js";
 import { connectDB } from "../config/db.js";
+import morgan from "morgan";
+import { GraphQLUpload, graphqlUploadExpress } from "graphql-upload";
 
 dotenv.config();
 
@@ -32,6 +34,9 @@ async function startServer() {
 
   app.use(cors());
   app.use(express.json());
+  app.use(morgan("dev"));
+  app.use(graphqlUploadExpress({ maxFileSize: 10000000, maxFiles: 1 })); // Limit file size to 10 MB
+
   app.use(
     "/graphql",
     expressMiddleware(server, {

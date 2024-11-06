@@ -11,8 +11,8 @@ const projectSchema = new mongoose.Schema({
   projectUrl: String,
   status: {
     type: String,
-    enum: ["In Progress", "Completed", "On Hold"],
-    default: "In Progress",
+    enum: ["IN_PROGRESS", "COMPLETED", "ON_HOLD"],
+    default: "IN_PROGRESS",
   },
   createdAt: {
     type: Date,

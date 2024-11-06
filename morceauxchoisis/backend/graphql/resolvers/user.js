@@ -8,15 +8,31 @@ import { ERROR_MESSAGES } from "../../config/constants.js";
 export const userResolvers = {
   Query: {
     users: async (_, __, { userId }) => {
+      // First verify user exists and get their details
       const currentUser = await User.findById(userId);
-      console.log("currentUser", currentUser);
+      if (!currentUser) {
+        handleError(ERROR_MESSAGES.USER_NOT_FOUND, "NOT_FOUND");
+      }
 
-      checkUserPermissions(userId, null, currentUser.isAdmin);
+      // Check if user is admin
+      if (!currentUser.isAdmin) {
+        handleError(ERROR_MESSAGES.UNAUTHORIZED, "FORBIDDEN");
+      }
+
+      // If admin, return all users
       return await User.find({}).select("-password");
     },
     user: async (_, { id }, { userId }) => {
       const currentUser = await User.findById(userId);
-      checkUserPermissions(userId, id, currentUser.isAdmin);
+      if (!currentUser) {
+        handleError(ERROR_MESSAGES.USER_NOT_FOUND, "NOT_FOUND");
+      }
+
+      // Check if user is admin
+      if (!currentUser.isAdmin) {
+        handleError(ERROR_MESSAGES.UNAUTHORIZED, "FORBIDDEN");
+      }
+
       return await User.findById(id).select("-password");
     },
   },
@@ -24,18 +40,10 @@ export const userResolvers = {
   Mutation: {
     login: async (_, { email, password }) => {
       const user = await User.findOne({ email });
-      console.log("FOUND USER", user);
-      console.log("INPUT PASSWORD:", password);
-      console.log("STORED HASH:", user.password);
 
       if (!user) handleError("Invalid credentials");
 
       const validPassword = await bcrypt.compare(password, user.password);
-      console.log("PASSWORD COMPARISON:", {
-        inputPassword: password,
-        storedHash: user.password,
-        result: validPassword,
-      });
 
       if (!validPassword) handleError("Invalid credentials");
 
@@ -66,8 +74,7 @@ export const userResolvers = {
     updateUser: async (_, { id, input }, { userId }) => {
       // First check if we have a userId from context
       if (!userId) {
-        console.log("UNAUTHENTICATED", userId);
-
+        // If not, throw an error
         handleError(ERROR_MESSAGES.UNAUTHENTICATED, "UNAUTHENTICATED");
       }
 
@@ -93,6 +100,7 @@ export const userResolvers = {
     },
 
     deleteUser: async (_, { id }, { userId }) => {
+      const currentUser = await User.findById(userId);
       checkUserPermissions(userId, id, currentUser.isAdmin);
 
       await User.findByIdAndDelete(id);
@@ -103,6 +111,25 @@ export const userResolvers = {
       const user = await User.findOne({ email });
       if (!user || !user.isAdmin) {
         handleError("User not found or not admin");
+      }
+
+      // Set password directly without triggering pre-save middleware
+      await User.updateOne(
+        { _id: user._id },
+        { $set: { password: await hashPassword(newPassword) } }
+      );
+
+      return {
+        token: generateToken(user._id),
+        user,
+      };
+    },
+
+    // Update User Password
+    updateUserPassword: async (_, { email, newPassword }) => {
+      const user = await User.findOne({ email });
+      if (!user) {
+        handleError("User not found");
       }
 
       // Set password directly without triggering pre-save middleware
