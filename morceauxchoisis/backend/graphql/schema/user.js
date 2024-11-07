@@ -69,7 +69,7 @@ export const userTypeDefs = `#graphql
   scalar  Upload
 
   extend type Mutation {
-    uploadImage(file: Upload!): String!
+    uploadFile(file: Upload!): String!
     updateUserAvatar(file: Upload!): String!
     uploadProjectImage(file: Upload!, projectId: ID!): String!
     deleteUserAvatar: Boolean!

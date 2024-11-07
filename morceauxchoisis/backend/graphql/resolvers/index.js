@@ -1,5 +1,6 @@
 import { userResolvers } from "./user.js";
 import { projectResolvers } from "./project.js";
+import { fileUploadResolvers } from "./fileUpload.js";
 
 export const resolvers = {
   Query: {
@@ -9,5 +10,6 @@ export const resolvers = {
   Mutation: {
     ...userResolvers.Mutation,
     ...projectResolvers.Mutation,
+    ...fileUploadResolvers.Mutation,
   },
 };

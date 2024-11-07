@@ -1,10 +1,18 @@
 import { uploadToCloudinary } from "../../utils/fileUpload.js";
-import { Project } from "../../models/Project.js";
 
 export const fileUploadResolvers = {
   Mutation: {
     uploadFile: async (_, { file }) => {
-      const fileUrl = await uploadToCloudinary(file);
+      const optimizationOptions = {
+        folder: "portfolio",
+        transformation: [
+          { width: 1200, crop: "limit" },
+          { quality: "auto" },
+          { fetch_format: "auto" },
+        ],
+      };
+
+      const fileUrl = await uploadToCloudinary(file, optimizationOptions);
       return fileUrl;
     },
 

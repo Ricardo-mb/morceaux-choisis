@@ -21,7 +21,10 @@ const PORT = process.env.PORT || 4000;
 async function startServer() {
   const server = new ApolloServer({
     typeDefs: typeDefs,
-    resolvers,
+    resolvers: {
+      Upload: GraphQLUpload,
+      ...resolvers,
+    },
     formatError: (error) => {
       return {
         message: error.message,
