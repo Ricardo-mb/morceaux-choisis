@@ -1,4 +1,13 @@
 export const userTypeDefs = `#graphql
+type ResetPasswordPayload {
+  success: Boolean!
+  message: String!
+}
+input ResetPasswordInput{
+  email: String!
+  token: String!
+  newPassword: String!
+}
   type SocialLinks {
     github: String
     linkedin: String
@@ -63,6 +72,8 @@ export const userTypeDefs = `#graphql
     updateAdminPassword(email: String!, newPassword: String!): AuthPayload!
     updateUserPassword(email: String!, newPassword: String!): AuthPayload!
     deleteUser(id: ID!): Boolean!
+    requestPasswordReset(email: String!): ResetPasswordPayload!
+    resetPassword(input: ResetPasswordInput!): AuthPayload!
   }
 
 

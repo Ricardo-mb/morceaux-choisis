@@ -8,7 +8,7 @@ import { typeDefs } from "../graphql/schema/index.js";
 import { resolvers } from "../graphql/resolvers/index.js";
 import { connectDB } from "../config/db.js";
 import morgan from "morgan";
-import { GraphQLUpload, graphqlUploadExpress } from "graphql-upload";
+import { GraphQLUpload, graphqlUploadExpress } from "graphql-upload-minimal";
 
 dotenv.config();
 

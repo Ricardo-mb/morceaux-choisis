@@ -143,6 +143,51 @@ export const userResolvers = {
         user,
       };
     },
+    requestPasswordReset: async (_, { email }) => {
+      const user = await User.findOne({ email });
+      if (!user) {
+        throw new Error("User not found");
+      }
+
+      const resetToken = generateToken(); // Create a token
+      await User.updateOne(
+        { email },
+        { resetToken, resetTokenExpiry: Date.now() + 3600000 }
+      );
+
+      // Send email with reset token
+      await sendResetEmail(email, resetToken);
+
+      return {
+        success: true,
+        message: "Reset password instructions sent to email",
+      };
+    },
+    resetPassword: async (_, { input: { email, token, newPassword } }) => {
+      const user = await User.findOne({
+        email,
+        resetToken: token,
+        resetTokenExpiry: { $gt: Date.now() },
+      });
+
+      if (!user) {
+        throw new Error("Invalid or expired reset token");
+      }
+
+      const hashedPassword = await bcrypt.hash(newPassword, 10);
+      user.password = hashedPassword;
+      user.resetToken = null;
+      user.resetTokenExpiry = null;
+
+      await user.save();
+
+      const authToken = generateJWT(user); // Generate new JWT
+
+      return {
+        token: authToken,
+        user,
+      };
+    },
   },
 };
 const checkUserPermissions = (userId, id, isAdmin) => {
