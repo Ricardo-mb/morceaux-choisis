@@ -34,6 +34,7 @@ body {
     --chart-5: 27 87% 67%;
     --radius: 0.5rem;
   }
+
   .dark {
     --background: 222.2 84% 4.9%;
     --foreground: 210 40% 98%;
@@ -66,7 +67,32 @@ body {
   * {
     @apply border-border;
   }
+
   body {
     @apply bg-background text-foreground;
+  }
+}
+
+@layer components {
+  .card {
+    @apply bg-card text-card-foreground;
+  }
+}
+
+@layer utilities {
+  .nav-link {
+    @apply relative px-3 py-2 text-sm font-medium transition-all duration-200 ease-in-out;
+  }
+
+  .nav-link::after {
+    @apply absolute bottom-0 left-0 h-[2px] w-0 bg-primary content-[''] transition-all duration-300 ease-in-out;
+  }
+
+  .nav-link:hover::after {
+    @apply w-full;
+  }
+
+  .nav-link-active::after {
+    @apply w-full;
   }
 }

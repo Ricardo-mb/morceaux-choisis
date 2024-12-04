@@ -1,11 +1,12 @@
+import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { ArrowRight, Code, Briefcase, Send } from 'lucide-react';
 
 export default function Home() {
   return (
     <div className="flex min-h-screen flex-col bg-background">
-      <main className="container mx-auto flex items-center justify-center px-4 py-8">
-        <section className="flex w-full items-center justify-center space-y-6 pb-8 pt-6 md:pb-12 md:pt-10 lg:py-32">
+      <main className="flex-1">
+        <section className="space-y-6 pb-8 pt-6 md:pb-12 md:pt-10 lg:py-32">
           <div className="container flex max-w-[64rem] flex-col items-center gap-4 text-center">
             <h1 className="font-heading text-3xl font-bold sm:text-5xl md:text-6xl lg:text-7xl">
               Welcome to my <span className="text-primary">Portfolio</span>
@@ -27,7 +28,7 @@ export default function Home() {
           </div>
         </section>
 
-        {/* <section className="container space-y-6 py-8 md:py-12 lg:py-24">
+        <section className="container space-y-6 py-8 md:py-12 lg:py-24">
           <div className="mx-auto flex max-w-[58rem] flex-col items-center space-y-4 text-center">
             <div className="flex gap-4">
               <Code className="h-6 w-6 text-primary" />
@@ -41,49 +42,8 @@ export default function Home() {
               development, design, and problem-solving.
             </p>
           </div>
-        </section> */}
+        </section>
       </main>
     </div>
   );
 }
-
-// import Image from 'next/image';
-
-// export default function Home() {
-//   return (
-//     <div className="min-h-screen bg-background text-foreground">
-//       <main className="container mx-auto px-4 py-8">
-//         <section className="text-center">
-//           <h1 className="mb-4 text-4xl font-bold text-primary">
-//             Welcome to my portfolio
-//           </h1>
-//           <p className="mx-auto mb-8 max-w-2xl text-xl text-muted-foreground">
-//             These are amazing projects to showcase my skills.
-//           </p>
-
-//           <div className="flex justify-center space-x-4">
-//             <a
-//               href="/services"
-//               className="rounded-lg bg-primary px-6 py-3 text-primary-foreground transition-colors hover:bg-primary/90"
-//             >
-//               Explore Services
-//             </a>
-//             <a
-//               href="/contact"
-//               className="rounded-lg bg-secondary px-6 py-3 text-secondary-foreground transition-colors hover:bg-secondary/90"
-//             >
-//               Contact Us
-//             </a>
-//           </div>
-//         </section>
-
-//       </main>
-
-//       <footer className="mt-16 bg-secondary py-8 text-secondary-foreground">
-//         <div className="container mx-auto px-4 text-center">
-//           <p>&copy; 2024 Your Company. All rights reserved.</p>
-//         </div>
-//       </footer>
-//     </div>
-//   );
-// }
