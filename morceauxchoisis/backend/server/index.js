@@ -35,7 +35,12 @@ async function startServer() {
 
   await server.start();
 
-  app.use(cors());
+  app.use(
+    cors({
+      origin: "http://localhost:3000",
+      credentials: true,
+    }),
+  );
   app.use(express.json());
   app.use(morgan("dev"));
   app.use(graphqlUploadExpress({ maxFileSize: 10000000, maxFiles: 1 })); // Limit file size to 10 MB
@@ -59,7 +64,7 @@ async function startServer() {
         }
         return { userId: null };
       },
-    })
+    }),
   );
 
   // Error handling middleware

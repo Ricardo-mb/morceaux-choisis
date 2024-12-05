@@ -57,7 +57,7 @@ export const userResolvers = {
       const validationError = validateUserInput(
         input.name,
         input.email,
-        input.password
+        input.password,
       );
       if (validationError) handleError(validationError);
 
@@ -93,7 +93,7 @@ export const userResolvers = {
       const updatedUser = await User.findByIdAndUpdate(
         id,
         { ...input },
-        { new: true }
+        { new: true },
       ).select("-password");
 
       return updatedUser;
@@ -116,7 +116,7 @@ export const userResolvers = {
       // Set password directly without triggering pre-save middleware
       await User.updateOne(
         { _id: user._id },
-        { $set: { password: await hashPassword(newPassword) } }
+        { $set: { password: await hashPassword(newPassword) } },
       );
 
       return {
@@ -135,7 +135,7 @@ export const userResolvers = {
       // Set password directly without triggering pre-save middleware
       await User.updateOne(
         { _id: user._id },
-        { $set: { password: await hashPassword(newPassword) } }
+        { $set: { password: await hashPassword(newPassword) } },
       );
 
       return {
@@ -152,7 +152,7 @@ export const userResolvers = {
       const resetToken = generateToken(); // Create a token
       await User.updateOne(
         { email },
-        { resetToken, resetTokenExpiry: Date.now() + 3600000 }
+        { resetToken, resetTokenExpiry: Date.now() + 3600000 },
       );
 
       // Send email with reset token

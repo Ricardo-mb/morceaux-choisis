@@ -1,7 +1,7 @@
 'use client';
-import { NavigationMenu } from '@/components/ui/navigation-menu';
+
 import { ModeToggle } from '@/components/shared/mode-toggle';
-import { Home, Layout, Settings, User, FileCode, Menu, X } from 'lucide-react';
+import { Menu, X } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
@@ -9,10 +9,10 @@ import { Button } from '@/components/ui/button';
 import { Logo } from '@/components/shared/logo';
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+
 const routes = [
   {
     label: 'Home',
-    icon: Home,
     href: '/',
   },
   {
@@ -156,81 +156,3 @@ export function Navbar() {
     </header>
   );
 }
-
-// 'use client';
-
-// import { NavigationMenu } from '@/components/ui/navigation-menu';
-// import { ModeToggle } from '@/components/shared/mode-toggle';
-// import { Home, Layout, Settings, User, FileCode, Menu } from 'lucide-react';
-// import Link from 'next/link';
-// import { usePathname } from 'next/navigation';
-// import { cn } from '@/lib/utils';
-// import { Button } from '@/components/ui/button';
-// import Logo from '../ui/logo';
-
-// const routes = [
-//   {
-//     label: 'Home',
-//     icon: Home,
-//     href: '/',
-//   },
-//   {
-//     label: 'Projects',
-//     href: '/projects',
-//   },
-//   // {
-//   //   label: 'Dashboard',
-//   //   href: '/dashboard',
-//   // },
-//   {
-//     label: 'About',
-//     href: '/about',
-//   },
-//   {
-//     label: 'Contact',
-//     href: '/contact',
-//   },
-//   {
-//     label: 'Login',
-//     href: '/login',
-//   },
-//   {
-//     label: 'Register',
-//     href: '/register',
-//   },
-// ];
-
-// export function Navbar() {
-//   const pathname = usePathname();
-
-//   return (
-//     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-//       <div className="container mx-auto flex h-16 justify-between px-4 py-4">
-//         <Link href="/" className="flex items-center gap-2">
-//           <Logo />
-//         </Link>
-//         <NavigationMenu />
-//         <div className="flex items-center justify-between space-x-2 md:justify-end">
-//           <div className="flex items-center gap-12">
-//             {routes.map((route) => (
-//               <Link
-//                 key={route.href}
-//                 href={route.href}
-//                 className={cn(
-//                   'flex items-center gap-2 text-lg font-semibold',
-//                   pathname === route.href && 'text-primary'
-//                 )}
-//               >
-//                 {route.label}
-//               </Link>
-//             ))}
-//           </div>
-//           <ModeToggle />
-//           <Button variant="ghost" size="icon" className="md:hidden">
-//             <Menu className="h-5 w-5" />
-//           </Button>
-//         </div>
-//       </div>
-//     </header>
-//   );
-// }
