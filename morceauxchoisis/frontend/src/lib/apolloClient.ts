@@ -1,8 +1,10 @@
 import { ApolloClient, InMemoryCache, createHttpLink } from "@apollo/client";
+import dotenv from "dotenv";
 
+dotenv.config();
 const httpLink = createHttpLink({
-  uri:
-    process.env.NEXT_PUBLIC_GRAPHQL_ENDPOINT || "http://localhost:4000/graphql",
+  uri: process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000/graphql",
+
   credentials: "include",
 });
 
