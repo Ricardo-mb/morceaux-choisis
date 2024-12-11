@@ -21,7 +21,7 @@ export const validateUserInput = (name, email, password) => {
 
   if (!password || !validatePassword(password)) {
     errors.push(
-      "Password must be at least 8 characters long and contain at least one letter and one number"
+      "Password must be at least 8 characters long and contain at least one letter and one number",
     );
   }
 

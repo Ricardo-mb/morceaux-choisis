@@ -28,7 +28,7 @@ export const fileUploadResolvers = {
       const updatedProject = await Project.findByIdAndUpdate(
         projectId,
         { imageUrl: fileUrl },
-        { new: true }
+        { new: true },
       );
 
       return updatedProject;

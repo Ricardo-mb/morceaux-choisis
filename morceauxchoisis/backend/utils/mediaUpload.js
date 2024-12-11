@@ -21,7 +21,7 @@ export const uploadMedia = async (file, type, projectId) => {
           projectId,
           createdAt: new Date().toISOString(),
         });
-      }
+      },
     );
     stream.pipe(uploadStream);
   });

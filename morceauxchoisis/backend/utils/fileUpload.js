@@ -30,7 +30,7 @@ export const uploadToCloudinary = async (file, options = {}) => {
       (error, result) => {
         if (error) reject(error);
         resolve(result.secure_url);
-      }
+      },
     );
     stream.pipe(uploadStream);
   });
