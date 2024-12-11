@@ -37,9 +37,9 @@ async function startServer() {
 
   app.use(
     cors({
-      origin: "http://localhost:3000",
-      credentials: true,
-    }),
+      origin: process.env.CORS_ORIGIN || "http://localhost:3000",
+      credentials: true, // Allow credentials (cookies, authorization headers)
+    })
   );
   app.use(express.json());
   app.use(morgan("dev"));
