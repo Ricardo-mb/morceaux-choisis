@@ -6,52 +6,99 @@ import { validateUserInput } from "../../utils/validators.js";
 import { ERROR_MESSAGES } from "../../config/constants.js";
 
 export const userResolvers = {
-  Query: {
-    users: async (_, __, { userId }) => {
-      // First verify user exists and get their details
-      const currentUser = await User.findById(userId);
-      if (!currentUser) {
-        handleError(ERROR_MESSAGES.USER_NOT_FOUND, "NOT_FOUND");
-      }
+  // Query: {
+  //   users: async (_, __, { userId }) => {
+  //     // First verify user exists and get their details
+  //     const currentUser = await User.findById(userId);
+  //     console.log("Current user:", currentUser);
 
-      // Check if user is admin
-      if (!currentUser.isAdmin) {
-        handleError(ERROR_MESSAGES.UNAUTHORIZED, "FORBIDDEN");
-      }
+  //     if (!currentUser) {
+  //       handleError(ERROR_MESSAGES.USER_NOT_FOUND, "NOT_FOUND");
+  //     }
 
-      // If admin, return all users
-      return await User.find({}).select("-password");
-    },
-    user: async (_, { id }, { userId }) => {
-      const currentUser = await User.findById(userId);
-      if (!currentUser) {
-        handleError(ERROR_MESSAGES.USER_NOT_FOUND, "NOT_FOUND");
-      }
+  //     // Check if user is admin
+  //     if (!currentUser.isAdmin) {
+  //       handleError(ERROR_MESSAGES.UNAUTHORIZED, "FORBIDDEN");
+  //     }
 
-      // Check if user is admin
-      if (!currentUser.isAdmin) {
-        handleError(ERROR_MESSAGES.UNAUTHORIZED, "FORBIDDEN");
-      }
+  //     // If admin, return all users
+  //     return await User.find({}).select("-password");
+  //   },
+  //   user: async (_, { id }, { userId }) => {
+  //     const currentUser = await User.findById(userId);
+  //     if (!currentUser) {
+  //       handleError(ERROR_MESSAGES.USER_NOT_FOUND, "NOT_FOUND");
+  //     }
 
-      return await User.findById(id).select("-password");
-    },
+  //     // Check if user is admin
+  //     if (!currentUser.isAdmin) {
+  //       handleError(ERROR_MESSAGES.UNAUTHORIZED, "FORBIDDEN");
+  //     }
+
+  //     return await User.findById(id).select("-password");
+  //   },
+  // },
+Query: {
+  users: async (_, __, { userId }) => {
+    if (!userId) {
+      handleError(ERROR_MESSAGES.UNAUTHENTICATED, "UNAUTHENTICATED");
+    }
+
+    const currentUser = await User.findById(userId);
+    if (!currentUser || !currentUser.isAdmin) {
+      handleError(ERROR_MESSAGES.UNAUTHORIZED, "FORBIDDEN");
+    }
+
+    const users = await User.find({}).select('-password');
+    return users.map(user => ({
+      ...user._doc,
+      id: user._id,
+      createdAt: new Date(parseInt(user.createdAt)).toLocaleString(),
+      updatedAt: new Date(parseInt(user.updatedAt)).toLocaleString()
+    }));
   },
+  
+  user: async (_, { id }, { userId }) => {
+    if (!userId) {
+      handleError(ERROR_MESSAGES.UNAUTHENTICATED, "UNAUTHENTICATED");
+    }
 
-  Mutation: {
+    const currentUser = await User.findById(userId);
+    if (!currentUser || !currentUser.isAdmin) {
+      handleError(ERROR_MESSAGES.UNAUTHORIZED, "FORBIDDEN");
+    }
+
+    const user = await User.findById(id).select('-password');
+    return {
+      ...user._doc,
+      id: user._id,
+      createdAt: new Date(parseInt(user.createdAt)).toLocaleString(),
+      updatedAt: new Date(parseInt(user.updatedAt)).toLocaleString()
+    };
+  }
+},  Mutation: {
     login: async (_, { email, password }) => {
       const user = await User.findOne({ email });
-
       if (!user) handleError("Invalid credentials");
 
       const validPassword = await bcrypt.compare(password, user.password);
-
       if (!validPassword) handleError("Invalid credentials");
 
-      return {
-        token: generateToken(user._id),
-        user: user,
-      };
-    },
+      // return {
+      //   token: generateToken(user._id),
+      //   user: user,
+      // };
+    
+     const token = generateToken(user._id);
+     console.log('Generated token:', token);  // Add this for debugging
+  
+    return {
+      token,
+      user,
+    };
+    
+  },
+
 
     register: async (_, { input }) => {
       const validationError = validateUserInput(

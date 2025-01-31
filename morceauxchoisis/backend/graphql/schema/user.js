@@ -1,13 +1,15 @@
 export const userTypeDefs = `#graphql
-type ResetPasswordPayload {
-  success: Boolean!
-  message: String!
-}
-input ResetPasswordInput{
-  email: String!
-  token: String!
-  newPassword: String!
-}
+  type ResetPasswordPayload {
+    success: Boolean!
+    message: String!
+  }
+
+  input ResetPasswordInput {
+    email: String!
+    token: String!
+    newPassword: String!
+  }
+
   type SocialLinks {
     github: String
     linkedin: String
@@ -18,7 +20,6 @@ input ResetPasswordInput{
     id: ID!
     name: String!
     email: String!
-    password: String!
     createdAt: String!
     updatedAt: String!
     isAdmin: Boolean!
@@ -38,7 +39,7 @@ input ResetPasswordInput{
   input UserInput {
     name: String!
     email: String!
-    password: String!
+    password: String!  # Password for registration
     avatar: String
     bio: String
     skills: [String]
@@ -48,7 +49,6 @@ input ResetPasswordInput{
   input UpdateUserInput {
     name: String
     email: String
-    password: String
     avatar: String
     bio: String
     skills: [String]
@@ -56,7 +56,7 @@ input ResetPasswordInput{
   }
 
   type Query {
-    users: [User]
+    users: [User]!
     user(id: ID!): User
   }
 
@@ -76,8 +76,7 @@ input ResetPasswordInput{
     resetPassword(input: ResetPasswordInput!): AuthPayload!
   }
 
-
-  scalar  Upload
+  scalar Upload
 
   extend type Mutation {
     uploadFile(file: Upload!): String!
@@ -85,4 +84,4 @@ input ResetPasswordInput{
     uploadProjectImage(file: Upload!, projectId: ID!): String!
     deleteUserAvatar: Boolean!
   }
-`;
+`

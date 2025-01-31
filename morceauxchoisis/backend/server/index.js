@@ -42,32 +42,40 @@ async function startServer() {
     })
   );
   app.use(express.json());
+  app.use(express.urlencoded({ extended: true }));
   app.use(morgan("dev"));
   app.use(graphqlUploadExpress({ maxFileSize: 10000000, maxFiles: 1 })); // Limit file size to 10 MB
 
+  
   app.use(
-    "/graphql",
-    expressMiddleware(server, {
-      context: async ({ req }) => {
-        // Get token from header
-        const token = req.headers.authorization?.split("Bearer ")[1] || "";
+  "/graphql",
+  expressMiddleware(server, {
+    context: async ({ req }) => {
+      // Get token from header
+      const token = req.headers.authorization?.split("Bearer ")[1] || "";
+      console.log("Token:", token);
 
-        if (token) {
-          try {
-            // Verify token
-            const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      if (token) {
+        try {
+          // Verify token
+          const decoded = jwt.verify(token, process.env.JWT_SECRET);
+          console.log("Decoded Token:", decoded);
+          console.log("USER ID:", decoded.userId);
+          
 
-            return { userId: decoded.userId };
-          } catch (err) {
-            return { userId: null };
-          }
+          // Return user information from the token
+          return { userId: decoded.userId };
+        } catch (err) {
+          console.error("Token verification failed:", err);
+          return { userId: null };
         }
-        return { userId: null };
-      },
-    }),
-  );
-
-  // Error handling middleware
+      }
+      return { userId: null };
+    },
+  }),
+);
+  
+  
   app.use((err, req, res, next) => {
     console.error(err.stack);
     res.status(500).json({ message: "Internal server error" });
