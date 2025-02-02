@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Send } from "lucide-react";
+import Link from "next/link";
 
 export default function Home() {
   return (
@@ -16,13 +17,17 @@ export default function Home() {
                Mon objectif est de vous offrir une expérience utilisateur exceptionnelle et de répondre à vos besoins spécifiques.
             </p>
             <div className='flex gap-4'>
-              <Button size='lg'>
+              <Button asChild size='lg'>
+                <Link href='/projects'>
                 Projects
-                <ArrowRight className='ml-2 h-4 w-4' />
+                <ArrowRight className='ml-2 h-4 w-2' />
+                </Link>
               </Button>
-              <Button variant='outline' size='lg'>
+              <Button asChild variant='outline' size='lg'>
+                <Link href='/contact'>
                 Contacter
                 <Send className='ml-2 h-4 w-4' />
+                </Link>
               </Button>
             </div>
           </div>

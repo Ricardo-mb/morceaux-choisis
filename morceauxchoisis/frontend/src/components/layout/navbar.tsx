@@ -20,6 +20,10 @@ const routes = [
     href: "/projects",
   },
   {
+    label: "Create Project",
+    href: "/dashboard/create-project",
+  },
+  {
     label: "About",
     href: "/about",
   },
@@ -34,7 +38,7 @@ const routes = [
   {
     label: "Register",
     href: "/register",
-  },
+  },  
 ];
 
 export function Navbar() {
