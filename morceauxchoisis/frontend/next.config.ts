@@ -2,7 +2,11 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   images: {
-    domains: ["via.placeholder.com"], // Add external domains here
+    domains: [
+      "res.cloudinary.com",
+      "example.com",
+      "via.placeholder.com",
+    ],
   },
 };
 
