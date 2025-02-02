@@ -1,3 +1,5 @@
+"scalar Upload"
+
 import { PROJECT_STATUS } from "../../config/constants.js";
 
 export const projectTypeDefs = `#graphql
@@ -23,9 +25,9 @@ export const projectTypeDefs = `#graphql
   input ProjectInput {
     name: String!
     description: String!
-    imageUrl: String!
+    image:Upload!
     projectUrl: String!
-    status: ProjectStatus!
+    status: ProjectStatus
   }
 
   input UpdateProjectInput {

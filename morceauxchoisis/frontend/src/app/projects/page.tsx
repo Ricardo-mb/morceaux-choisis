@@ -43,13 +43,20 @@ const ProjectCard = ({ project }: { project: Project }) => (
     </CardHeader>
     <CardContent className='space-y-4'>
       <div className='relative aspect-video overflow-hidden rounded-lg'>
-        <Image
-          src={project.imageUrl}
-          alt={project.name}
-          fill
-          className='object-cover transition-transform duration-300 hover:scale-105'
-          sizes='(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw'
-        />
+        {project.imageUrl ? (
+          <Image
+            src={project.imageUrl}
+            alt={project.name}
+            fill
+            className='object-cover transition-transform duration-300 hover:scale-105'
+            sizes='(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw'
+          />
+        ) : (
+          <div className='flex h-full items-center justify-center bg-muted'>
+            <p className='text-sm text-muted-foreground'>No image</p>
+          </div>
+        )}
+
       </div>
       <CardDescription className='text-base leading-relaxed'>
         {project.description}
@@ -57,7 +64,7 @@ const ProjectCard = ({ project }: { project: Project }) => (
     </CardContent>
     <CardFooter className='flex items-center justify-between border-t bg-secondary/10 px-6 py-4'>
       <time className='text-sm text-muted-foreground'>
-        {new Date(project.createdAt).toLocaleDateString("en-US", {
+        {new Date(project.createdAt).toLocaleDateString("fr-FR", {
           month: "long",
           year: "numeric",
         })}
@@ -106,12 +113,12 @@ export default function Page() {
         <div className='container relative mx-auto px-4'>
           <div className='fade-in space-y-4'>
             <h1 className='text-center text-4xl font-bold tracking-tight sm:text-5xl lg:text-6xl'>
-              Our Creative Projects
+              "Morceaux Choisis"
             </h1>
             <p className='mx-auto max-w-2xl text-center text-lg text-muted-foreground sm:text-xl'>
-              Discover our portfolio of innovative solutions and creative
+              {/* Discover our portfolio of innovative solutions and creative
               endeavors. Each project represents our commitment to excellence
-              and forward-thinking design.
+              and forward-thinking design. */}
             </p>
           </div>
         </div>

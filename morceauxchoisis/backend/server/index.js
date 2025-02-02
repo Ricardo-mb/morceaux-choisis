@@ -18,6 +18,11 @@ connectDB();
 
 const PORT = process.env.PORT || 4000;
 
+/**
+ * Starts the server.
+ *
+ * @returns {Promise<void>}
+ */
 async function startServer() {
   const server = new ApolloServer({
     typeDefs: typeDefs,
@@ -25,6 +30,14 @@ async function startServer() {
       Upload: GraphQLUpload,
       ...resolvers,
     },
+    /**
+     * Format error to return to client.
+     * @param {import("graphql").GraphQLError} error The error to format.
+     * @returns {Object} An object with `message` and `status` properties.
+     *   `message` is the error message to return to the client.
+     *   `status` is the error status code to return to the client.
+     *   If `error` does not have an `extensions.code` property, defaults to `"SERVER_ERROR"`.
+     */
     formatError: (error) => {
       return {
         message: error.message,
@@ -38,7 +51,7 @@ async function startServer() {
   app.use(
     cors({
       origin: process.env.CORS_ORIGIN || "http://localhost:3000",
-      credentials: true, // Allow credentials (cookies, authorization headers)
+      credentials: true, // Allow credentials (cookies and/or authorization headers)
     })
   );
   app.use(express.json());
@@ -48,6 +61,15 @@ async function startServer() {
   app.use(
     "/graphql",
     expressMiddleware(server, {
+  /**
+   * A function that returns context for each GraphQL resolver.
+   * The context is an object that is passed to each resolver.
+   * In this case, it will contain the user ID if a valid token is provided.
+   * @param {import("express").Request} req - The Express request object.
+   * @returns {Object} - An object with a `userId` property.
+   *   `userId` is the user ID if a valid token is provided.
+   *   Otherwise, `userId` is `null`.
+   */
       context: async ({ req }) => {
         // Get token from header
         const token = req.headers.authorization?.split("Bearer ")[1] || "";
@@ -56,12 +78,15 @@ async function startServer() {
           try {
             // Verify token
             const decoded = jwt.verify(token, process.env.JWT_SECRET);
+            console.log("Decoded Token:", decoded);
 
             return { userId: decoded.userId };
           } catch (err) {
+            console.error("Token verification error:", err);
             return { userId: null };
           }
         }
+        console.log("No token provided");
         return { userId: null };
       },
     }),
