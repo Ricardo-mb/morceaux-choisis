@@ -23,6 +23,7 @@ const getIcon = (type: string) => {
   const iconMap: { [key: string]: string } = {
     html: '/icons/html.svg',
     css: '/icons/css3.svg',
+    tailwind: '/icons/tailwind.svg',
     javascript: '/icons/javascript.svg',
     typescript: '/icons/typescript.svg',
     bootstrap: '/icons/bootstrap.svg',
@@ -40,8 +41,6 @@ const getIcon = (type: string) => {
     postman: '/icons/postman.svg',
     mysql: '/icons/mysql.svg',
     docker: '/icons/docker.svg',
-   
-    
   };
 
   return (
@@ -60,8 +59,8 @@ const SkillsSection = ({ skills }: SkillsSectionProps) => {
   const backendSkills = skills.filter(skill => skill.category === 'backend');
 
   return (
-    <div className="container mx-auto px-4 py-12">
-      <div className="space-y-16">
+    <div className="container mx-auto px-2 py-8">
+      <div className="space-y-4">
         {/* Frontend Section */}
         <div>
           {/* <h2 className="text-xl font-bold mb-8">Frontend Development</h2> */}

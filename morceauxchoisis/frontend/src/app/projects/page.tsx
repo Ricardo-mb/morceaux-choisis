@@ -113,12 +113,10 @@ export default function Page() {
         <div className='container relative mx-auto px-4'>
           <div className='fade-in space-y-4'>
             <h1 className='text-center text-4xl font-bold tracking-tight sm:text-5xl lg:text-6xl'>
-              "Morceaux Choisis"
+              Projets
             </h1>
             <p className='mx-auto max-w-2xl text-center text-lg text-muted-foreground sm:text-xl'>
-              {/* Discover our portfolio of innovative solutions and creative
-              endeavors. Each project represents our commitment to excellence
-              and forward-thinking design. */}
+              "Explorez mes projets récents et découvrez comment je peux aider votre entreprise à atteindre ses objectifs."
             </p>
           </div>
         </div>

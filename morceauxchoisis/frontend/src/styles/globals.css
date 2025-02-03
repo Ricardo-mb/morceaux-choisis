@@ -95,4 +95,27 @@ body {
   .nav-link-active::after {
     @apply w-full;
   }
+
+  Timeline && Skill .animate-fade-in {
+    animation: fadeIn 0.6s ease-out forwards;
+  }
+
+  .timeline-item {
+    @apply relative pl-8 pb-12 border-l border-gray-200;
+    width: 55vw;
+  }
+
+  .timeline-item::before {
+    content: '';
+    @apply absolute w-4 h-4 bg-white border-2 border-primary rounded-full -left-2 mt-1.5;
+  }
+
+  .timeline-item:last-child {
+    @apply border-0 pb-0;
+  }
+
+  /*
+  .skill-bar {
+    @apply h-2 rounded-full bg-gray-200 overflow-hidden;
+  } */
 }
