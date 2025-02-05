@@ -25,7 +25,7 @@ import Image from "next/image";
 
 interface Skill {
   name: string;
-  level: number;
+  // level: number;
   icon: string;
   category: 'frontend' | 'backend';
 }
@@ -173,7 +173,7 @@ const SkillCard = ({ skill, index }: { skill: Skill; index: number }) => (
             <motion.div
               className="skill-progress bg-primary"
               initial={{ width: 0 }}
-               whileInView={{ width: `${skill.level}%` }}
+              //  whileInView={{ width: `${skill.level}%` }}
               transition={{ duration: 1, delay: 0.2 }}
               viewport={{ once: true }}
             />

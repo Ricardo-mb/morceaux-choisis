@@ -8,11 +8,6 @@ input ResetPasswordInput{
   token: String!
   newPassword: String!
 }
-  type SocialLinks {
-    github: String
-    linkedin: String
-    twitter: String
-  }
 
   type User {
     id: ID!
@@ -22,37 +17,21 @@ input ResetPasswordInput{
     createdAt: String!
     updatedAt: String!
     isAdmin: Boolean!
-    role: String!
-    avatar: String
-    bio: String
-    skills: [String]
-    socialLinks: SocialLinks
   }
 
-  input SocialLinksInput {
-    github: String
-    linkedin: String
-    twitter: String
-  }
 
   input UserInput {
     name: String!
     email: String!
     password: String!
-    avatar: String
-    bio: String
-    skills: [String]
-    socialLinks: SocialLinksInput
+    isAdmin: Boolean!
   }
 
   input UpdateUserInput {
     name: String
     email: String
     password: String
-    avatar: String
-    bio: String
-    skills: [String]
-    socialLinks: SocialLinksInput
+    isAdmin: Boolean
   }
 
   type Query {
@@ -66,7 +45,7 @@ input ResetPasswordInput{
   }
 
   type Mutation {
-    login(email: String!, password: String!): AuthPayload!
+    loginMutation(email: String!, password: String!): AuthPayload!
     register(input: UserInput!): AuthPayload!
     updateUser(id: ID!, input: UpdateUserInput!): User!
     updateAdminPassword(email: String!, newPassword: String!): AuthPayload!

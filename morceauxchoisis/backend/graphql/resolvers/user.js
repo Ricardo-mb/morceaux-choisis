@@ -38,7 +38,7 @@ export const userResolvers = {
   },
 
   Mutation: {
-    login: async (_, { email, password }) => {
+    loginMutation: async (_, { email, password }) => {
       const user = await User.findOne({ email });
 
       if (!user) handleError("Invalid credentials");
