@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import { ChevronRight } from "lucide-react";
 import Link from "next/link";
+import { motion } from "framer-motion";
 
 const Register = () => {
   const [name, setName] = useState("");
@@ -19,8 +20,15 @@ const Register = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background to-primary/5">
-      <Card className="w-full max-w-md p-8 space-y-6">
+    <div className="min-h-screen bg-background flex items-center justify-center">
+      <main className="w-full max-w-md px-4 ">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+          className="max-w-4xl mx-auto"
+        >
+      <Card className="w-full max-w-xl p-8 space-y-6">
         <div className="space-y-2 text-center">
           <h2 className="text-3xl font-bold">Create Account</h2>
           <p className="text-muted-foreground">Sign up to get started</p>
@@ -76,6 +84,8 @@ const Register = () => {
           </Link>
         </div>
       </Card>
+      </motion.div>
+      </main>
     </div>
   );
 };

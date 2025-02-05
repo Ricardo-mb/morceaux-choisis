@@ -1,11 +1,13 @@
 "use client";
 
+import { motion} from "framer-motion";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import { ChevronRight } from "lucide-react";
 import Link from "next/link";
+
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -17,11 +19,18 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background to-primary/5">
+     <div className="min-h-screen bg-background flex items-center justify-center">
+      <main className="w-full max-w-md px-4 ">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+          className="max-w-4xl mx-auto"
+        >
       <Card className="w-full max-w-md p-8 space-y-6">
         <div className="space-y-2 text-center">
-          <h2 className="text-3xl font-bold">Welcome Back</h2>
-          <p className="text-muted-foreground">Enter your credentials to continue</p>
+          <h2 className="text-3xl font-bold">Bienvenue</h2>
+          <p className="text-muted-foreground">Connectez-vous</p>
         </div>
         
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -56,6 +65,8 @@ const Login = () => {
           </Link>
         </div>
       </Card>
+      </motion.div>
+      </main>
     </div>
   );
 };

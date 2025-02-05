@@ -31,6 +31,12 @@ export const skills = [
   },
 
   {
+    name: "CSS-3",
+    level: 90,
+    icon: "css",
+    category: "frontend"
+  },
+  {
     name: "Bootstrap",
     level: 90,
     icon: "bootstrap",
@@ -40,6 +46,12 @@ export const skills = [
     name:"Tailwind",
     level: 80,
     icon: "tailwind",
+    category: "frontend"
+  },
+  {
+    name: "Codium AI",
+    level: 80,
+    icon: "codium",
     category: "frontend"
   },
   // ... (Backendskills)    

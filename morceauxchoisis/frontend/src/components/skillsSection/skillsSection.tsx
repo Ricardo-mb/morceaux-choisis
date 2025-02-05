@@ -3,13 +3,29 @@
 
 import { motion } from "framer-motion";
 import { Card } from "@/components/ui/card";
-import Image from 'next/image';
-
+import Image from "next/image";
+// import {
+//   Code,
+//   FileCode,
+//   Palette,
+//   LayoutGrid,
+//   Boxes,
+//   Component,
+//   Figma,
+//   Binary,
+//   Database,
+//   Terminal,
+//   Cloud,
+//   Server,
+//   Send,
+//   Webhook,
+//   MonitorSmartphone
+// } from "lucide-react";
 
 
 interface Skill {
   name: string;
-//   level: number;
+  level: number;
   icon: string;
   category: 'frontend' | 'backend';
 }
@@ -22,7 +38,7 @@ interface SkillsSectionProps {
 const getIcon = (type: string) => {
   const iconMap: { [key: string]: string } = {
     html: '/icons/html.svg',
-    css: '/icons/css3.svg',
+    css: '/icons/css.svg',
     tailwind: '/icons/tailwind.svg',
     javascript: '/icons/javascript.svg',
     typescript: '/icons/typescript.svg',
@@ -33,6 +49,7 @@ const getIcon = (type: string) => {
     react: '/icons/react.svg',
     next: '/icons/nextjs.svg',
     redux: '/icons/redux.svg',
+    codium: '/icons/codium.svg',
     nodejs: '/icons/nodejs.svg',
     express: '/icons/express.svg',
     python: '/icons/python.svg',
@@ -46,6 +63,7 @@ const getIcon = (type: string) => {
   return (
     <Image 
       src={iconMap[type.toLowerCase()] || '/icons/code.svg'}
+      priority={true}
       alt={type}
       width={48}
       height={48}
@@ -53,6 +71,44 @@ const getIcon = (type: string) => {
     />
   );
 };
+
+// const getIcon = (type: string) => {
+//   switch (type) {
+//     case "html":
+//       return <FileCode className="w-12 h-12" />;
+//     case "css":
+//       return <Palette className="w-12 h-12" />;
+//     case "javascript":
+//       return <Binary className="w-12 h-12" />;
+//     case "bootstrap":
+//       return <LayoutGrid className="w-12 h-12" />;
+//     case "materialui":
+//       return <Component className="w-12 h-12" />;
+//     case "shadcn":
+//       return <Boxes className="w-12 h-12" />;
+//     case "figma":
+//       return <Figma className="w-12 h-12" />;
+//     case "react":
+//       return <Code className="w-12 h-12" />;
+//     case "redux":
+//       return <MonitorSmartphone className="w-12 h-12" />;
+//     case "nodejs":
+//       return <Terminal className="w-12 h-12" />;
+//     case "express":
+//       return <Cloud className="w-12 h-12" />;
+//     case "python":
+//       return <Code className="w-12 h-12" />;
+//     case "mongodb":
+//       return <Database className="w-12 h-12" />;
+//     case "graphql":
+//       return <Webhook className="w-12 h-12" />;
+//     case "postman":
+//       return <Send className="w-12 h-12" />;
+//     default:
+//       return <Server className="w-12 h-12" />;
+//   }
+// };
+
 
 const SkillsSection = ({ skills }: SkillsSectionProps) => {
   const frontendSkills = skills.filter(skill => skill.category === 'frontend');
@@ -117,7 +173,7 @@ const SkillCard = ({ skill, index }: { skill: Skill; index: number }) => (
             <motion.div
               className="skill-progress bg-primary"
               initial={{ width: 0 }}
-            //   whileInView={{ width: `${skill.level}%` }}
+               whileInView={{ width: `${skill.level}%` }}
               transition={{ duration: 1, delay: 0.2 }}
               viewport={{ once: true }}
             />
