@@ -23,10 +23,10 @@ const routes = [
     label: "Create Project",
     href: "/dashboard/create-project",
   },
-  {
-    label: "About",
-    href: "/about",
-  },
+  // {
+  //   label: "About",
+  //   href: "/about",
+  // },
   {
     label: "Contact",
     href: "/contact",
