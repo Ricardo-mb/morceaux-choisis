@@ -67,6 +67,7 @@ const LoginMutation = () => {
       const { token, user } = data.loginMutation;
       login(token, user);
       router.push('/dashboard');
+      resetForm();
     },
     onError: (error) => {
       setAttempts(prev => prev + 1);
