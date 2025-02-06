@@ -59,7 +59,7 @@ const LoginMutation = () => {
   const handleInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value.trim() }));
-    setErrorMessage(""); // Clear error when user types
+    setErrorMessage(""); // clear error when user types
   }, []);
 
   const [loginMutation, { loading }] = useMutation(LOGIN_MUTATION, {
@@ -187,3 +187,5 @@ const LoginMutation = () => {
 };
 
 export default LoginMutation;
+
+

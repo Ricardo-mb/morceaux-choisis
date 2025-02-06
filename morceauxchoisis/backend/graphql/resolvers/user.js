@@ -53,11 +53,12 @@ export const userResolvers = {
       };
     },
 
-    register: async (_, { input }) => {
+    registerMutation: async (_, { input }) => {
       const validationError = validateUserInput(
         input.name,
         input.email,
         input.password,
+        input.isAdmin,
       );
       if (validationError) handleError(validationError);
 
