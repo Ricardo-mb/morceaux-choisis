@@ -4,7 +4,6 @@ import { useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import { ArrowRight, ChevronDown, Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
-// import { Card } from "@/components/ui/card";
 import SkillsSection from "@/components/skillsSection/skillsSection";
 import Timeline from "@/components/timeline/timeline";
 import Link from "next/link";

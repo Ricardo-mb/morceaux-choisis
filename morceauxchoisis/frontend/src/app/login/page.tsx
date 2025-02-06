@@ -9,6 +9,8 @@ import { ChevronRight } from "lucide-react";
 import Link from "next/link";
 import { gql, useMutation } from '@apollo/client';
 import { useRouter } from 'next/navigation';
+import { useContext } from 'react';
+import { AuthContext } from '@/contexts/AuthContext';
 
 const LOGIN_MUTATION = gql`
   mutation LoginMutation($email: String!, $password: String!) {
@@ -23,8 +25,10 @@ const LOGIN_MUTATION = gql`
   }
 `;
 
+
 const LoginMutation = () => {
   const router = useRouter();
+  const { login } = useContext(AuthContext);
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [errorMessage, setErrorMessage] = useState("");
   const [attempts, setAttempts] = useState(0);
@@ -58,38 +62,11 @@ const LoginMutation = () => {
     setErrorMessage(""); // Clear error when user types
   }, []);
 
-  const [login, { loading }] = useMutation(LOGIN_MUTATION, {
+  const [loginMutation, { loading }] = useMutation(LOGIN_MUTATION, {
     onCompleted: (data) => {
       const { token, user } = data.loginMutation;
-
-      if(!token || !user) {
-        setErrorMessage(ERROR_MESSAGES['User not found']);
-        return;
-      }
-      
-      try {
-        // Reset attempts on successful login
-        setAttempts(0);
-        
-        // Securely store auth data
-        localStorage.setItem('token', token);
-        localStorage.setItem('user', JSON.stringify({
-          id: user.id,
-          name: user.name,
-          email: user.email
-        }));
-
-        const storedToken = localStorage.getItem('token');
-        if (!storedToken) {
-          throw new Error('Token storage failed');
-        }
-
-        resetForm();
-        router.push('/dashboard');
-      } catch (error) {
-        console.error('Storage error:', error);
-        setErrorMessage(ERROR_MESSAGES['Network error']);
-      }
+      login(token, user);
+      router.push('/dashboard');
     },
     onError: (error) => {
       setAttempts(prev => prev + 1);
@@ -127,7 +104,7 @@ const LoginMutation = () => {
     }
 
     try {
-      await login({ 
+      await loginMutation({ 
         variables: { 
           email: email.toLowerCase(), 
           password 
@@ -137,8 +114,7 @@ const LoginMutation = () => {
       console.error('Error logging in:', error);
       setErrorMessage(ERROR_MESSAGES['Invalid credentials']);
     }
-  }, [formData, login, attempts]);
-
+  }, [formData, loginMutation, attempts, MAX_ATTEMPTS, ERROR_MESSAGES, setErrorMessage]);
   return (
     <div className="min-h-screen bg-background flex items-center justify-center">
       <main className="w-full max-w-md px-4">

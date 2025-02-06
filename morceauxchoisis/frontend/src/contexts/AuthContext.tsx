@@ -1,41 +1,62 @@
 "use client";
 
-import React, { useState, useEffect, createContext, JSX } from "react";
+import { createContext, useState, useEffect, Dispatch, SetStateAction } from "react";
 
-const AuthContext = createContext<{
+interface AuthContextType {
   isAuthenticated: boolean;
-  setIsAuthenticated: React.Dispatch<React.SetStateAction<boolean>>;
-}>({
+  setIsAuthenticated: Dispatch<SetStateAction<boolean>>;
+  user: any;
+  login: (token: string, userData: any) => Promise<void>;
+  logout: () => void;
+}
+
+export const AuthContext = createContext<AuthContextType>({
   isAuthenticated: false,
   setIsAuthenticated: () => {},
+  user: null,
+  login: async () => {},
+  logout: () => {},
 });
 
-  /**
-   * Provider component that wraps the app and provides authentication
-   * context to all components.
-   *
-   * Checks if there is a token in local storage and sets the
-   * isAuthenticated state accordingly.
-   *
-   * @param {{ children: React.ReactNode }} props
-   * @returns {JSX.Element}
-   */
-export const AuthProvider = ({ children }: { children: React.ReactNode }): JSX.Element => {
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+interface AuthProviderProps {
+  children: React.ReactNode;
+}
+
+
+export const AuthProvider = ({ children }: AuthProviderProps) => {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [user, setUser] = useState<any>(null);
+
+  const login = async (token: string, userData: any) => {
+    localStorage.setItem('token', token);
+    localStorage.setItem('user', JSON.stringify(userData));
+    setIsAuthenticated(true);
+    setUser(userData);
+  };
+
+  const logout = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    setIsAuthenticated(false);
+    setUser(null);
+  };
 
   useEffect(() => {
-    console.log('Checking if there is a token in local storage');
     const token = localStorage.getItem('token');
-    console.log('Token:', token);
+    const userData = JSON.parse(localStorage.getItem('user') || 'null');
     setIsAuthenticated(!!token);
-    console.log('isAuthenticated:', isAuthenticated);
+    setUser(userData);
   }, []);
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, setIsAuthenticated }}>
+    <AuthContext.Provider value={{ 
+      isAuthenticated, 
+      setIsAuthenticated,
+      user,
+      login,
+      logout 
+    }}>
       {children}
     </AuthContext.Provider>
   );
 };
-
-export { AuthContext };
