@@ -43,10 +43,11 @@ input ResetPasswordInput{
     token: String!
     user: User!
   }
+  
 
   type Mutation {
     loginMutation(email: String!, password: String!): AuthPayload!
-    register(input: UserInput!): AuthPayload!
+    registerMutation(input: UserInput!): AuthPayload!
     updateUser(id: ID!, input: UpdateUserInput!): User!
     updateAdminPassword(email: String!, newPassword: String!): AuthPayload!
     updateUserPassword(email: String!, newPassword: String!): AuthPayload!

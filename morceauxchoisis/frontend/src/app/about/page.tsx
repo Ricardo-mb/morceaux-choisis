@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
 import { motion } from "framer-motion";
 import { ArrowRight, ChevronDown, Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
