@@ -10,6 +10,17 @@ import { Logo } from "@/components/shared/logo";
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
+const adminLinks = [
+  {
+    label: "Admin Dashboard",
+    href: "/admin/dashboard",
+  },
+  {
+    label: "Create Project",
+    href: "/admin/dashboard/projects/create",
+  }
+];
+
 const routes = [
   {
     label: "Home",
@@ -19,14 +30,6 @@ const routes = [
     label: "Projects",
     href: "/projects",
   },
-  {
-    label: "Create Project",
-    href: "/dashboard/create-project",
-  },
-  // {
-  //   label: "About",
-  //   href: "/about",
-  // },
   {
     label: "Contact",
     href: "/contact",
@@ -38,13 +41,14 @@ const routes = [
   {
     label: "Register",
     href: "/register",
-  },  
+  },
 ];
 
 export function Navbar() {
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+
   useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 20);
@@ -52,6 +56,21 @@ export function Navbar() {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  //Component navigation
+{adminLinks.map((link) => (
+  <Link 
+    key={link.href}
+    href={link.href}
+    className={cn(
+      "nav-link",
+      pathname === link.href && "nav-link-active text-primary"
+    )}
+  >
+    {link.label}
+  </Link>
+))}
+
   return (
     <header
       className={cn(
@@ -90,6 +109,18 @@ export function Navbar() {
                   )}
                 >
                   {route.label}
+                </Link>
+              ))}
+              {adminLinks.map((link) => (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className={cn(
+                    "nav-link",
+                    pathname === link.href && "nav-link-active text-primary"
+                  )}
+                >
+                  {link.label}
                 </Link>
               ))}
               <ModeToggle />

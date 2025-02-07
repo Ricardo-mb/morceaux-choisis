@@ -1,24 +1,45 @@
 "use client";
 
-import { useState } from "react";
+import { useAuth } from "@/contexts/AuthContext";
+import { gql, useMutation } from "@apollo/client";
+import { useRouter } from "next/navigation";
 import Image from "next/image";
+import { toast } from "react-toastify";
+import { useEffect, useState } from "react";
+
+const CREATE_PROJECT = gql`
+  mutation CreateProject($input: CreateProjectInput!) {
+    createProject(input: $input) {
+      id
+      name
+      description
+      projectUrl
+      status
+      imageUrl
+      createdAt
+    }
+  }
+  `;
 
 const CreateProject = () => {
+  const { isAdmin } = useAuth();
+  const router = useRouter();
+  const [createProject, { loading }] = useMutation(CREATE_PROJECT);
+
   const [formData, setFormData] = useState({
     name: "",
     description: "",
     projectUrl: "",
-    status: "IN_PROGRESS",
+    status: "IN_PROGRESS"
   });
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [file, setFile] = useState<File | null>(null);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
-  };
+  useEffect(() => {
+    if (!isAdmin) {
+      router.push('/dashboard');
+    }
+  }, [isAdmin, router]);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -32,15 +53,43 @@ const CreateProject = () => {
     }
   };
 
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+  ) => {
+    setFormData(prev => ({
+      ...prev,
+      [e.target.name]: e.target.value
+    }));
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Add your mutation logic here
+    
+    try {
+      const { data } = await createProject({
+        variables: {
+          input: {
+            ...formData
+          },
+          file
+        }
+      });
+
+      if (data?.createProject) {
+        toast.success('Project created successfully');
+        router.push('/admin/dashboard/projects');
+      }
+    } catch (error) {
+      toast.error('Failed to create project');
+      console.error('Project creation error:', error);
+    }
   };
+
+  if (!isAdmin) return null;
 
   return (
     <div className="max-w-4xl mx-auto p-6">
       <h1 className="text-3xl font-bold mb-8">Create New Project</h1>
-      
       <form onSubmit={handleSubmit} className="space-y-6">
         <div>
           <label className="block text-sm font-medium mb-2">Project Name</label>
@@ -112,9 +161,11 @@ const CreateProject = () => {
 
         <button
           type="submit"
-          className="bg-pink-500 text-white px-6 py-2 rounded-md hover:bg-blue-600 transition-colors"
+          disabled={loading}
+          className={`bg-pink-500 text-white px-6 py-2 rounded-md transition-colors
+            ${loading ? 'opacity-50 cursor-not-allowed' : 'hover:bg-blue-600'}`}
         >
-          Create Project
+          {loading ? 'Creating...' : 'Create Project'}
         </button>
       </form>
     </div>
