@@ -65,12 +65,33 @@ export const userResolvers = {
       const existingUser = await User.findOne({ email: input.email });
       if (existingUser) handleError("Email already exists");
 
-      const user = await User.create(input);
-      return {
-        token: generateToken(user._id),
-        user: user,
+      // const user = await User.create(input);
+      // return {
+      //   token: generateToken(user._id),
+      //   user: user,
+      // };
+
+       try {
+          const hashedPassword = await bcrypt.hash(input.password, 12);
+          
+          const user = new User({
+            ...input,
+            password: hashedPassword,
+            role: input.role || 'USER', // Default role if not provided
+            createdAt: new Date().toISOString()
+          });
+
+          const savedUser = await user.save();
+          const token = generateToken(savedUser);
+
+          return {
+            token,
+            user: savedUser
       };
-    },
+    } catch (error) {
+      handleDatabaseError(error);
+    }
+},
 
     updateUser: async (_, { id, input }, { userId }) => {
       // First check if we have a userId from context

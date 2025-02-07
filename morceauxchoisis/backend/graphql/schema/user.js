@@ -14,6 +14,7 @@ input ResetPasswordInput{
     name: String!
     email: String!
     password: String!
+    role: String
     createdAt: String!
     updatedAt: String!
     isAdmin: Boolean!
@@ -31,6 +32,7 @@ input ResetPasswordInput{
     name: String
     email: String
     password: String
+    role: String
     isAdmin: Boolean
   }
 

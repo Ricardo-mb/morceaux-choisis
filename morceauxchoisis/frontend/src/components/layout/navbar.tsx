@@ -11,57 +11,65 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAuth } from "@/contexts/AuthContext";
 
-// const adminLinks = [
-//   {
-//     label: "Admin Dashboard",
-//     href: "/admin/dashboard",
-//   },
-//   {
-//     label: "Create Project",
-//     href: "/admin/dashboard/projects/create",
-//   }
-// ];
 
 
 export function Navbar() {
-  const { isAdmin, isAuthenticated } = useAuth();
+  const { user, isAuthenticated } = useAuth();
+  const isAdmin = user?.isAdmin;
+  
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
-  const publicRoutes = [
-    {
-      label: "Home",
-      href: "/",
-    },
-    {
-      label: "About",
-      href: "/about",
-    },
-    {
-      label: "Pricing",
-      href: "/pricing",
-    },
-    {
-      label: "Contact",
-      href: "/contact",
-    },
+  // Dynamically combine routes based on auth state
+  // const activeRoutes = [
+  //   ...publicRoutes,
+  //   ...(!isAuthenticated ? [
+  //     {
+  //       label: "Login",
+  //       href: "/login",
+  //     },
+  //     {
+  //       label: "Register",
+  //       href: "/register",
+  //     },
+  //   ] : []),
+  //   ...(isAuthenticated ? authRoutes : []),
+  //   ...(isAdmin ? adminRoutes : []),
+  // ];
+
+   const publicRoutes = [
+    { label: "Home", href: "/" },
+    { label: "Projects", href: "/projects" },
+    { label: "Contact", href: "/contact" },
   ];
 
- const authRoutes = [
-    {
-      label: "Dashboard",
-      href: "/user-dashboard",
-    },
-    {
-      label: "Profile",
-      href: "/profile",
-    },
+  const authRoutes = [
+    { label: "Dashboard", href: "/user-dashboard" },
   ];
+
+const adminRoutes = [
+  {
+    label: "Admin Dashboard",
+    href: "/admin/dashboard"
+  },
+  {
+    label: "Create Project",
+    href: "/admin/dashboard/projects/create"
+  },
+  {
+    label: "Manage Projects",
+    href: "/admin/dashboard/projects"
+  }
+];
+
 
   const routes = isAuthenticated 
-    ? [...publicRoutes, ...authRoutes] 
+    ? isAdmin
+      ? [...publicRoutes, ...authRoutes, ...adminRoutes]
+      : [...publicRoutes, ...authRoutes]
     : [...publicRoutes];
+  
 
   useEffect(() => {
     const handleScroll = () => {

@@ -14,6 +14,7 @@ const authLink = setContext((_, { headers }) => {
     headers: {
       ...headers,
       authorization: token ? `Bearer ${token}` : "",
+      role: localStorage.getItem("role")|| "GUEST",
     },
   };
 });

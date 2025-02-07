@@ -8,7 +8,7 @@ export const validatePassword = (password) => {
   return passwordRegex.test(password);
 };
 
-export const validateUserInput = (name, email, password) => {
+export const validateUserInput = (name, email, password, role) => {
   const errors = [];
 
   if (!name || name.trim().length < 2) {
@@ -21,13 +21,16 @@ export const validateUserInput = (name, email, password) => {
 
   if (!password || !validatePassword(password)) {
     errors.push(
-      "Password must be at least 8 characters long and contain at least one letter and one number",
+      "Password must be at least 8 characters long and contain at least one letter and one number"
     );
+  }
+
+  if (role && !['ADMIN', 'USER', 'GUEST'].includes(role)) {
+    errors.push("Invalid role specified");
   }
 
   return errors.length > 0 ? errors.join(", ") : null;
 };
-
 export const validateLoginInput = (email, password) => {
   const errors = [];
 

@@ -57,6 +57,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     // Assuming the registration process returns a token
     localStorage.setItem('token', token);
     localStorage.setItem('user', JSON.stringify(userData));
+    localStorage.setItem('userRole', userData.role);   
     setIsAuthenticated(true);
     setUser(userData);
     return {success : true, token, user : userData};
@@ -65,7 +66,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
   const logout = useCallback(() => {
     localStorage.removeItem('token');
-    localStorage.removeItem('user');
+    localStorage.removeItem('user');  
+    localStorage.removeItem('userRole');
     setIsAuthenticated(false);
     setUser(null);
     router.push('/');
