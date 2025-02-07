@@ -66,7 +66,7 @@ const LoginMutation = () => {
     onCompleted: (data) => {
       const { token, user } = data.loginMutation;
       login(token, user);
-      router.push('/dashboard');
+      router.push('/user-dashboard');
       resetForm();
     },
     onError: (error) => {

@@ -1,35 +1,24 @@
 "use client";
 
+import { useAuth } from "@/contexts/AuthContext";
 import { motion } from "framer-motion";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { log } from "console";
 
-const Dashboard = () => {
+export default function UserDashboard() {
+  const { user, isAuthenticated, logout } = useAuth();
   const router = useRouter();
-  const [user, setUser] = useState<{ id: string; name?: string; email?: string } | null>(null);
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    const userData = JSON.parse(localStorage.getItem('user') || '{}');
-    
-    if (!token || !userData.id) {
+    if (!isAuthenticated) {
       router.push('/login');
-    } else {
-      setUser(userData);
-      setLoading(false);
     }
-  }, []);
+  }, [isAuthenticated, router]);
 
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <p>Loading...</p>
-      </div>
-    );
-  }
+  if (!isAuthenticated) return null;
 
   return (
     <div className="min-h-screen bg-background">
@@ -46,20 +35,14 @@ const Dashboard = () => {
             </div>
             
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {/* Dashboard content cards */}
               <Card className="p-6">
                 <h3 className="text-xl font-semibold">Profile</h3>
                 <p className="text-muted-foreground">{user?.email}</p>
               </Card>
-              
-              {/* Add more dashboard sections */}
             </div>
 
             <Button 
-              onClick={() => {
-                localStorage.clear();
-                router.push('/login');
-              }}
+              onClick={logout}         
               className="mt-4"
             >
               Logout
@@ -69,5 +52,4 @@ const Dashboard = () => {
       </main>
     </div>
   );
-};
-export default Dashboard;
+}

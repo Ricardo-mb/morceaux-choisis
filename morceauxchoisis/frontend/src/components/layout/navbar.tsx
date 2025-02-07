@@ -9,45 +9,59 @@ import { Button } from "@/components/ui/button";
 import { Logo } from "@/components/shared/logo";
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useAuth } from "@/contexts/AuthContext";
 
-const adminLinks = [
-  {
-    label: "Admin Dashboard",
-    href: "/admin/dashboard",
-  },
-  {
-    label: "Create Project",
-    href: "/admin/dashboard/projects/create",
-  }
-];
+// const adminLinks = [
+//   {
+//     label: "Admin Dashboard",
+//     href: "/admin/dashboard",
+//   },
+//   {
+//     label: "Create Project",
+//     href: "/admin/dashboard/projects/create",
+//   }
+// ];
 
-const routes = [
-  {
-    label: "Home",
-    href: "/",
-  },
-  {
-    label: "Projects",
-    href: "/projects",
-  },
-  {
-    label: "Contact",
-    href: "/contact",
-  },
-  {
-    label: "Login",
-    href: "/login",
-  },
-  {
-    label: "Register",
-    href: "/register",
-  },
-];
 
 export function Navbar() {
+  const { isAdmin, isAuthenticated } = useAuth();
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+
+  const publicRoutes = [
+    {
+      label: "Home",
+      href: "/",
+    },
+    {
+      label: "About",
+      href: "/about",
+    },
+    {
+      label: "Pricing",
+      href: "/pricing",
+    },
+    {
+      label: "Contact",
+      href: "/contact",
+    },
+  ];
+
+ const authRoutes = [
+    {
+      label: "Dashboard",
+      href: "/user-dashboard",
+    },
+    {
+      label: "Profile",
+      href: "/profile",
+    },
+  ];
+
+  const routes = isAuthenticated 
+    ? [...publicRoutes, ...authRoutes] 
+    : [...publicRoutes];
 
   useEffect(() => {
     const handleScroll = () => {
@@ -56,20 +70,6 @@ export function Navbar() {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
-
-  //Component navigation
-{adminLinks.map((link) => (
-  <Link 
-    key={link.href}
-    href={link.href}
-    className={cn(
-      "nav-link",
-      pathname === link.href && "nav-link-active text-primary"
-    )}
-  >
-    {link.label}
-  </Link>
-))}
 
   return (
     <header
@@ -99,30 +99,23 @@ export function Navbar() {
               transition={{ duration: 0.5 }}
               className='flex items-center space-x-6'
             >
-              {routes.map((route) => (
-                <Link
-                  key={route.href}
-                  href={route.href}
-                  className={cn(
-                    "nav-link",
-                    pathname === route.href && "nav-link-active text-primary"
-                  )}
-                >
-                  {route.label}
-                </Link>
-              ))}
-              {adminLinks.map((link) => (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  className={cn(
-                    "nav-link",
-                    pathname === link.href && "nav-link-active text-primary"
-                  )}
-                >
-                  {link.label}
-                </Link>
-              ))}
+             {routes.map((route) => (
+          <Link
+            key={route.href}
+            href={route.href}
+            className={cn(
+              "nav-link",
+              pathname === route.href && "nav-link-active text-primary"
+            )}
+          >
+            {route.label}
+          </Link>
+        ))}
+        {isAdmin && (
+          <Link href="/admin/dashboard" className="nav-link">
+            Admin Dashboard
+          </Link>
+        )}
               <ModeToggle />
             </motion.div>
           </nav>
@@ -180,6 +173,18 @@ export function Navbar() {
                     {route.label}
                   </Link>
                 ))}
+                {isAdmin && (
+                  <Link 
+                    href="/admin/dashboard"
+                    onClick={() => setIsOpen(false)}
+                    className={cn(
+                      "nav-link text-lg",
+                      pathname === "/admin/dashboard" && "text-primary"
+                    )}
+                  >
+                    Admin Dashboard
+                  </Link>
+                )}
                 <div className='pt-2'>
                   <ModeToggle />
                 </div>

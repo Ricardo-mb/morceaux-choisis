@@ -1,7 +1,9 @@
 "use client";
 
+
+import { useRouter } from "next/navigation";
 import React from "react";
-import { createContext, useState, useEffect, Dispatch, SetStateAction } from "react";
+import { createContext, useState, useEffect, Dispatch, SetStateAction,useCallback } from "react";
 
 interface User {
   id: string;
@@ -38,6 +40,7 @@ interface AuthProviderProps {
 
 
 export const AuthProvider = ({ children }: AuthProviderProps) => {
+  const router = useRouter();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [user, setUser] = useState<any>(null);
   const isAdmin = user?.isAdmin || false;
@@ -60,12 +63,13 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
   }
 
-  const logout = () => {
+  const logout = useCallback(() => {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
     setIsAuthenticated(false);
     setUser(null);
-  };
+    router.push('/');
+  }, [router]);
 
 
   useEffect(() => {
