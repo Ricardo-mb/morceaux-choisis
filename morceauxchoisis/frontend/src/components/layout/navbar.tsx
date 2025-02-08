@@ -14,8 +14,12 @@ import { useAuth } from "@/contexts/AuthContext";
 
 
 export function Navbar() {
-  const { user, isAuthenticated } = useAuth();
-  const isAdmin = user?.isAdmin;
+  const { isAuthenticated, isAdmin } = useAuth();
+  // const isAdmin = user?.isAdmin;
+  console.log('isadmin ****', isAdmin);
+  console.log('isAuthenticated ****', isAuthenticated);
+  
+  
   
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
@@ -42,6 +46,8 @@ export function Navbar() {
     { label: "Home", href: "/" },
     { label: "Projects", href: "/projects" },
     { label: "Contact", href: "/contact" },
+    { label: "Login", href: "/login" },
+    { label: "Register", href: "/register" },
   ];
 
   const authRoutes = [

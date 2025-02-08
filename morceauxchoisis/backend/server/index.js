@@ -73,12 +73,13 @@ async function startServer() {
       context: async ({ req }) => {
         // Get token from header
         const token = req.headers.authorization?.split("Bearer ")[1] || "";
+        console.log("Token *********:", token);
 
         if (token) {
           try {
             // Verify token
             const decoded = jwt.verify(token, process.env.JWT_SECRET);
-            console.log("Decoded Token:", decoded);
+            console.log("Decoded Token*******:", decoded);
 
             return { userId: decoded.userId };
           } catch (err) {

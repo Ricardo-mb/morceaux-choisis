@@ -14,6 +14,7 @@ interface User {
 interface AuthContextType {
   isAuthenticated: boolean;
   setIsAuthenticated: Dispatch<SetStateAction<boolean>>;
+  setIsAdmin: Dispatch<SetStateAction<boolean>>;
   user: any;
   isAdmin: boolean;
   loading: boolean;
@@ -26,6 +27,7 @@ interface AuthContextType {
 export const AuthContext = createContext<AuthContextType>({
   isAuthenticated: false,
   setIsAuthenticated: () => {},
+  setIsAdmin: () => {},
   user: null,
   isAdmin: false,
   loading: false,
@@ -42,24 +44,28 @@ interface AuthProviderProps {
 export const AuthProvider = ({ children }: AuthProviderProps) => {
   const router = useRouter();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
   const [user, setUser] = useState<any>(null);
-  const isAdmin = user?.isAdmin || false;
+  // const isAdmin = user?.isAdmin || false;
 
 
   const login = async (token: string, userData: any) => {
+    const user = {...userData, isAdmin: userData.role === 'admin'||'ADMIN'};
     localStorage.setItem('token', token);
     localStorage.setItem('user', JSON.stringify(userData));
     setIsAuthenticated(true);
     setUser(userData);
+    setIsAdmin(user?.isAdmin);
   };
 
   const register = async (token: string, userData: any) => {
-    // Assuming the registration process returns a token
+    const user = {...userData, isAdmin: userData.role === 'admin'||'ADMIN'};
     localStorage.setItem('token', token);
     localStorage.setItem('user', JSON.stringify(userData));
     localStorage.setItem('userRole', userData.role);   
     setIsAuthenticated(true);
     setUser(userData);
+    setIsAdmin(user?.isAdmin);
     return {success : true, token, user : userData};
 
   }
@@ -79,12 +85,18 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     const userData = JSON.parse(localStorage.getItem('user') || 'null');
     setIsAuthenticated(!!token);
     setUser(userData);
+    if (userData) {
+      setIsAdmin(userData.isAdmin);
+    }else{
+      setIsAdmin(false);
+    }
   }, []);
 
   return (
     <AuthContext.Provider value={{ 
       isAuthenticated, 
       setIsAuthenticated,
+      setIsAdmin,
       user,
       isAdmin,
       loading: false,
