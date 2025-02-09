@@ -11,7 +11,7 @@ export const projectTypeDefs = `#graphql
     id: ID!
     name: String!
     description: String!
-    imageUrl: String!
+    imageUrl: String
     projectUrl: String!
     status: ProjectStatus!
     createdAt: String!
@@ -25,7 +25,7 @@ export const projectTypeDefs = `#graphql
   input ProjectInput {
     name: String!
     description: String!
-    image:Upload!
+    image:Upload
     projectUrl: String!
     status: ProjectStatus
   }

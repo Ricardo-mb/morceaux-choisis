@@ -64,9 +64,9 @@ const LoginMutation = () => {
 
   const [loginMutation, { loading }] = useMutation(LOGIN_MUTATION, {
     onCompleted: (data) => {
-      const { token, user } = data.loginMutation;
+      const { token, user, role } = data.loginMutation;
       login(token, user);
-      router.push('/user-dashboard');
+      router.push(role === 'admin' ? '/admin/dashboard' : '/');
       resetForm();
     },
     onError: (error) => {

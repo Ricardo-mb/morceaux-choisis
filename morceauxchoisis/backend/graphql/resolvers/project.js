@@ -29,7 +29,8 @@ export const projectResolvers = {
      */
     createProject: async (_, { project }, { userId }) => {
     const defaultImageUrl = "https://res.cloudinary.com/dros6cd9l/image/upload/v1738394445/adamoficheproduit_qnsj22.png";
-
+    console.log("Project @@@@ from project resolver:", project);
+    
     try {
     // Check authentication
     if (!userId) {

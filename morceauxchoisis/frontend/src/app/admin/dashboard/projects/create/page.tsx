@@ -6,10 +6,26 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { toast } from "react-toastify";
 import { useEffect, useState } from "react";
+import { log } from "console";
 
-const CREATE_PROJECT = gql`
-  mutation CreateProject($input: CreateProjectInput!) {
-    createProject(input: $input) {
+// const CREATE_PROJECT = gql`
+//   mutation CreateProject($input: ProjectInput!) {
+//     createProject(project: $input) {
+//       id
+//       name
+//       description
+//       projectUrl
+//       status
+//       imageUrl
+//       createdAt
+//     }
+//   }
+//   `;
+
+
+export const CREATE_PROJECT = gql`
+  mutation CreateProject($project: ProjectInput!) {
+    createProject(project: $project) {
       id
       name
       description
@@ -19,7 +35,7 @@ const CREATE_PROJECT = gql`
       createdAt
     }
   }
-  `;
+`;
 
 const CreateProject = () => {
   const { isAdmin } = useAuth();
@@ -30,6 +46,7 @@ const CreateProject = () => {
     name: "",
     description: "",
     projectUrl: "",
+    imageUrl: "",
     status: "IN_PROGRESS"
   });
   const [imagePreview, setImagePreview] = useState<string | null>(null);
@@ -62,28 +79,63 @@ const CreateProject = () => {
     }));
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+//   const handleSubmit = async (e: React.FormEvent) => {
+//     e.preventDefault();
+//     if (!file) {
+//       toast.error('Please select an image');
+//       return;
+//     }
+//    try {
+//     const { data: projectData } = await createProject({
+//       variables: {
+//         project: {
+//           name: formData.name,
+//           description: formData.description,
+//           image: file,
+//           projectUrl: formData.projectUrl,
+//           status: formData.status,
+//         }
+//       }
+//     });
     
-    try {
-      const { data } = await createProject({
-        variables: {
-          input: {
-            ...formData
-          },
-          file
-        }
-      });
+//     toast.success('Project created successfully');
+//     router.push(`/admin/dashboard/projects/${projectData.createProject.id}`);
+//   } catch (error) {
+//     console.error('Project creation error:', error);
+//     toast.error('Failed to create project');
+//   }
+// };
 
-      if (data?.createProject) {
-        toast.success('Project created successfully');
-        router.push('/admin/dashboard/projects');
+const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+  console.log("File:", file);
+
+  if (!file) {
+    toast.error('Please select an image');
+    return;
+  }
+  try {
+    const { data } = await createProject({
+      variables: {
+        project: {
+          name: formData.name,
+          description: formData.description,
+          image: null,  
+          projectUrl: formData.projectUrl,
+          status: formData.status,
+        },
+        file
       }
-    } catch (error) {
-      toast.error('Failed to create project');
-      console.error('Project creation error:', error);
-    }
-  };
+    });
+    console.log("Project Data @@@@@@@@:", data);
+    
+    toast.success('Project created successfully');
+    router.push("/admin/dashboard/projects/list");
+  } catch (error) {
+    console.error('Project creation error:', error);
+    toast.error('Failed to create project');
+  }
+};
 
   if (!isAdmin) return null;
 

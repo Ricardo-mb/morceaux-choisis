@@ -1,20 +1,20 @@
-"use client";
+"use client"
 
-import { useAuth } from '@/contexts/AuthContext';
-import { useRouter } from 'next/navigation';
-import { useEffect } from 'react';
+import { useAuth } from "@/contexts/AuthContext"
+import { useRouter } from "next/navigation"
+import { useEffect } from "react"
 
-export const AdminGuard = ({ children }: { children: React.ReactNode }) => {
-  const { user, loading } = useAuth();
-  const router = useRouter();
+export function AdminGuard({ children }: { children: React.ReactNode }) {
+  const { isAdmin, isAuthenticated } = useAuth()
+  const router = useRouter()
 
   useEffect(() => {
-    if (!loading && (!user || !user.isAdmin)) {
-      router.push('/dashboard');
+    if (!isAuthenticated || !isAdmin) {
+      router.push('/')
     }
-  }, [user, loading, router]);
+  }, [isAdmin, isAuthenticated, router])
 
-  if (loading) return <div>Loading...</div>;
-  
-  return user?.isAdmin ? <>{children}</> : null;
-};
+  if (!isAdmin) return null
+
+  return <>{children}</>
+}

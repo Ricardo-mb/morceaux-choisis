@@ -10,39 +10,25 @@ import { Logo } from "@/components/shared/logo";
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAuth } from "@/contexts/AuthContext";
-
-
+import { useRouter } from "next/navigation";
 
 export function Navbar() {
+
+  const router = useRouter();
   const { isAuthenticated, isAdmin } = useAuth();
-  // const isAdmin = user?.isAdmin;
-  console.log('isadmin ****', isAdmin);
-  console.log('isAuthenticated ****', isAuthenticated);
-  
-  
-  
+
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
-  // Dynamically combine routes based on auth state
-  // const activeRoutes = [
-  //   ...publicRoutes,
-  //   ...(!isAuthenticated ? [
-  //     {
-  //       label: "Login",
-  //       href: "/login",
-  //     },
-  //     {
-  //       label: "Register",
-  //       href: "/register",
-  //     },
-  //   ] : []),
-  //   ...(isAuthenticated ? authRoutes : []),
-  //   ...(isAdmin ? adminRoutes : []),
-  // ];
+ useEffect(() => {
+    if (isAuthenticated || !isAdmin) {
+      router.push("/user-dashboard");
+      return
+    }
+  }, [isAuthenticated, isAdmin, router]);
 
-   const publicRoutes = [
+  const publicRoutes = [
     { label: "Home", href: "/" },
     { label: "Projects", href: "/projects" },
     { label: "Contact", href: "/contact" },
@@ -54,28 +40,36 @@ export function Navbar() {
     { label: "Dashboard", href: "/user-dashboard" },
   ];
 
-const adminRoutes = [
-  {
-    label: "Admin Dashboard",
-    href: "/admin/dashboard"
-  },
-  {
-    label: "Create Project",
-    href: "/admin/dashboard/projects/create"
-  },
-  {
-    label: "Manage Projects",
-    href: "/admin/dashboard/projects"
-  }
-];
+  const adminRoutes = [
+    // {
+    //   label: "Admin Dashboard",
+    //   href: "/admin/dashboard"
+    // },
+    {
+      label: "Create Project",
+      href: "/admin/dashboard/projects/create"
+    },
+    {
+      label: "Manage Projects",
+      href: "/admin/dashboard/projects/list"
+    }
+  ];
 
+  const getAuthorizedRoutes = (isAuthenticated: boolean, isAdmin: boolean) => {
+    const baseRoutes = [...publicRoutes];
+    
+    if (isAuthenticated && !isAdmin) {
+      baseRoutes.push(...authRoutes);
+    }
+    
+    if (isAdmin) {
+      baseRoutes.push(...adminRoutes);
+    }
+    
+    return baseRoutes;
+  };
 
-  const routes = isAuthenticated 
-    ? isAdmin
-      ? [...publicRoutes, ...authRoutes, ...adminRoutes]
-      : [...publicRoutes, ...authRoutes]
-    : [...publicRoutes];
-  
+  const routes = getAuthorizedRoutes(isAuthenticated, isAdmin);
 
   useEffect(() => {
     const handleScroll = () => {

@@ -13,6 +13,7 @@ import {
   Settings 
 } from "lucide-react";
 import Link from "next/link";
+import { Button } from "@/components/ui/button";
 
 const GET_ADMIN_STATS = gql`
   query GetAdminStats {
@@ -32,7 +33,9 @@ const GET_ADMIN_STATS = gql`
     `;
 
 export default function AdminDashboard() {
-  const { isAdmin } = useAuth();
+
+  // const { logout } = useAuth();
+ 
   const { data, loading } = useQuery(GET_ADMIN_STATS);
 
   const quickActions = [
@@ -44,7 +47,7 @@ export default function AdminDashboard() {
     },
     {
       title: "Manage Projects",
-      href: "/admin/projects",
+      href: "/admin/dashboard/projects/list",
       icon: Settings,
       color: "text-blue-500"
     }
@@ -132,6 +135,14 @@ export default function AdminDashboard() {
             </div>
           </CardContent>
         </Card>
+        {/* <Button 
+        onClick={logout}
+        variant="destructive"
+        className="flex items-center gap-2"
+      >
+        <Button className="h-4 w-4" />
+        Logout
+      </Button> */}
       </div>
     </div>
   );

@@ -5,6 +5,7 @@ import { Navbar, Footer } from "@/components/layout";
 import "../styles/globals.css";
 import { AuthProvider } from "@/contexts/AuthContext";
 
+
 const MemoizedNavbar = memo(Navbar);
 const MemoizedFooter = memo(Footer);
 export default function RootLayout({

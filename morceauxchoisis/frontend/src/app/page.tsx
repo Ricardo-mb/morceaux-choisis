@@ -16,9 +16,7 @@ const Home = () => {
   const scrollToTimeline = () => {
     timelineRef.current?.scrollIntoView({ behavior: "smooth" });
   };
-  const scrollToSkills = () => {
-    skillsRef.current?.scrollIntoView({ block: "end" });
-  };
+ 
 
   const timelineData = [
     {

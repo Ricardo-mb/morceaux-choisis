@@ -7,10 +7,10 @@ export const GET_PROJECTS = gql`
       name
       description
       status
-      startDate
-      endDate
+      # startDate
+      # endDate
       createdAt
-      updatedAt
+      # updatedAt
     }
   }
 `;
@@ -31,16 +31,15 @@ export const GET_PROJECT = gql`
 `;
 
 export const CREATE_PROJECT = gql`
-  mutation CreateProject($input: CreateProjectInput!) {
-    createProject(input: $input) {
+  mutation CreateProject($project: ProjectInput!) {
+    createProject(project: $project) {
       id
       name
       description
+      projectUrl
       status
-      startDate
-      endDate
+      imageUrl
       createdAt
-      updatedAt
     }
   }
 `;
