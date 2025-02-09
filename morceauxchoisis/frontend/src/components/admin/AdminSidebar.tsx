@@ -13,10 +13,10 @@ const adminRoutes = [
     label: "Create Project",
     href: "/admin/dashboard/projects/create",
   },
-  // {
-  //   label: "Manage Projects",
-  //   href: "/admin/dashboard/projects",
-  // }
+  {
+    label: "Manage Projects",
+    href: "/admin/dashboard/projects/list",
+  }
 ];
 
 export function AdminSidebar() {

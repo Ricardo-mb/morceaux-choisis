@@ -1,12 +1,23 @@
 {
-  "framework": "nextjs",
-  "buildCommand": "cd frontend && npm run build",
-  "outputDirectory": "frontend/.next",
-  "installCommand": "cd frontend && npm install",
-  "rewrites": [
+  "version": 2,
+  "projects": {
+    "frontend": {
+      "root": "frontend"
+    },
+    "backend": {
+      "root": "backend"
+    }
+  },
+  "builds": [
     {
-      "source": "/(.*)",
-      "destination": "/frontend/$1"
+      "src": "backend/server/index.js",
+      "use": "@vercel/node"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "/frontend$1"
     }
   ]
 }
