@@ -17,7 +17,12 @@
     "build": "cd frontend && npm run build",
     "start": "cd frontend && npm run start",
     "lint": "cd frontend && npm run lint",
-    "type-check": "cd frontend && tsc --noEmit"
+    "type-check": "cd frontend && tsc --noEmit",
+    "lint:fix": "cd frontend && npm run lint:fix",
+    "lint:check": "cd frontend && npm run lint:check",
+    "prettier": "prettier --write .",
+    "prettier:check": "prettier --check .",
+    "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm install --prefix frontend && npm run build --prefix frontend"
   },
   "keywords": [],
   "author": "",
