@@ -10,14 +10,22 @@
   },
   "builds": [
     {
+      "src": "frontend/next.config.js",
+      "use": "@vercel/next"
+    },
+    {
       "src": "backend/server/index.js",
       "use": "@vercel/node"
     }
   ],
   "routes": [
     {
+      "src": "/graphql",
+      "dest": "backend/server/index.js"
+    },
+    {
       "src": "/(.*)",
-      "dest": "/frontend$1"
+      "dest": "frontend/$1"
     }
   ]
 }
