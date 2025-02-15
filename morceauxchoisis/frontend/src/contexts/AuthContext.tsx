@@ -50,14 +50,25 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   // const isAdmin = user?.isAdmin || false;
 
 
-  const login = async (token: string, userData: any) => {
-    const user = {...userData, isAdmin: userData.role === 'admin'||'ADMIN'};
-    localStorage.setItem('token', token);
-    localStorage.setItem('user', JSON.stringify(userData));
-    setIsAuthenticated(true);
-    setUser(userData);
-    setIsAdmin(user?.isAdmin);
-  };
+
+const login = async (token: string, userData: any) => {
+  localStorage.setItem('token', token);
+  localStorage.setItem('isAdmin', String(userData.isAdmin));
+  localStorage.setItem('role', userData.role);
+  setIsAuthenticated(true);
+  setIsAdmin(userData.isAdmin);
+  setUser(userData);
+};
+
+
+  // const login = async (token: string, userData: any) => {
+  //   const user = {...userData, isAdmin: userData.role === 'admin' || userData.role === 'ADMIN'};
+  //   localStorage.setItem('token', token);
+  //   localStorage.setItem('user', JSON.stringify(user)); 
+  //   setIsAuthenticated(true);
+  //   setUser(user);
+  //   setIsAdmin(user.isAdmin);
+  // };
 
   const register = async (token: string, userData: any) => {
     const user = {...userData, isAdmin: userData.role === 'admin'||'ADMIN'};

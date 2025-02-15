@@ -7,23 +7,12 @@ import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import { ChevronRight } from "lucide-react";
 import Link from "next/link";
-import { gql, useMutation } from '@apollo/client';
+import { useMutation } from '@apollo/client';
 import { useRouter } from 'next/navigation';
 import { useContext } from 'react';
 import { AuthContext } from '@/contexts/AuthContext';
+import { LOGIN_MUTATION } from '@/graphql/mutations/user';
 
-const LOGIN_MUTATION = gql`
-  mutation LoginMutation($email: String!, $password: String!) {
-    loginMutation(email: $email, password: $password) {
-      token
-      user {
-        id
-        name
-        email
-      }
-    }
-  }
-`;
 
 
 const LoginMutation = () => {

@@ -3,9 +3,10 @@ import { User } from "../../models/User.js";
 import { generateToken, hashPassword } from "../../utils/auth.js";
 import { handleError } from "../../utils/errorHandler.js";
 import { validateUserInput } from "../../utils/validators.js";
-import { ERROR_MESSAGES } from "../../config/constants.js";
+import { ERROR_MESSAGES } from "../../config/constants.js"; 
 
-export const userResolvers = {
+
+export const userResolvers = {  
   Query: {
     users: async (_, __, { userId }) => {
       // First verify user exists and get their details
@@ -40,16 +41,19 @@ export const userResolvers = {
   Mutation: {
     loginMutation: async (_, { email, password }) => {
       const user = await User.findOne({ email });
-
       if (!user) handleError("Invalid credentials");
 
       const validPassword = await bcrypt.compare(password, user.password);
-
       if (!validPassword) handleError("Invalid credentials");
 
       return {
         token: generateToken(user._id),
-        user: user,
+        user: {
+          id: user._id,
+          name: user.name,
+          email: user.email,
+          isAdmin: user.isAdmin
+        }
       };
     },
 
@@ -82,7 +86,7 @@ export const userResolvers = {
           });
 
           const savedUser = await user.save();
-          const token = generateToken(savedUser);
+          const token = generateToken(savedUser._id);
 
           return {
             token,
@@ -91,6 +95,7 @@ export const userResolvers = {
     } catch (error) {
       handleDatabaseError(error);
     }
+    
 },
 
     updateUser: async (_, { id, input }, { userId }) => {
@@ -218,3 +223,4 @@ const checkUserPermissions = (userId, id, isAdmin) => {
     handleError(ERROR_MESSAGES.UNAUTHORIZED, "FORBIDDEN");
   }
 };
+

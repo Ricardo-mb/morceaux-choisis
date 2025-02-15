@@ -47,3 +47,19 @@ export const RESET_PASSWORD = gql`
         }
     }
 `;
+
+export const LOGIN_MUTATION = gql`
+  mutation LoginMutation($email: String!, $password: String!) {
+    loginMutation(email: $email, password: $password) {
+      token
+      user {
+        id
+        name
+        email
+        isAdmin
+        role
+        accountStatus
+      }
+    }
+  }
+`;

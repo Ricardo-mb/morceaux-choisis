@@ -18,6 +18,9 @@ input ResetPasswordInput{
     createdAt: String!
     updatedAt: String!
     isAdmin: Boolean!
+    accountStatus: String
+    loginCount: Int
+    skills: [String]
   }
 
 
