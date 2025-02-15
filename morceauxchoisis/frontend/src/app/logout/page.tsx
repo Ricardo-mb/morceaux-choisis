@@ -13,7 +13,7 @@ export default function LogoutPage() {
 
   useEffect(() => {
     if (!isAuthenticated) {
-      router.push('/login');
+      router.push('/');
     }
   }, [isAuthenticated, router]);
 

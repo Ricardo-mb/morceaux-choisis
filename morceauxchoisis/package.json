@@ -3,12 +3,18 @@
   "version": "1.0.0",
   "main": "index.js",
   "type": "module",
+  "engines": {
+    "node": ">=18.8.2",
+    "npm": ">=10.9.0"
+  },
   "workspaces": [
     "frontend",
     "backend"
   ],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "security": "npm audit",
+    "security:fix": "npm audit",
     "dev:backend": "nodemon backend/server/index.js",
     "dev:frontend": "cd frontend && npm run dev",
     "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",

@@ -10,6 +10,7 @@ interface User {
   email: string;
   username: string;
   isAdmin: boolean;
+  role?: 'admin' | 'user' | 'ADMIN' | 'USER';  // Add role enum
 }
 interface AuthContextType {
   isAuthenticated: boolean;
