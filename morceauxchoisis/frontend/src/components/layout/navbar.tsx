@@ -23,7 +23,7 @@ export function Navbar() {
 
  useEffect(() => {
     if (isAuthenticated || !isAdmin) {
-      router.push("/user-dashboard");
+      router.push("/logout");
       return
     }
   }, [isAuthenticated, isAdmin, router]);
@@ -37,7 +37,7 @@ export function Navbar() {
   ];
 
   const authRoutes = [
-    { label: "Dashboard", href: "/user-dashboard" },
+    { label: "Dashboard", href: "/logou" },
   ];
 
   const adminRoutes = [
