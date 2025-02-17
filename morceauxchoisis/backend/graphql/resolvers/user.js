@@ -1,6 +1,6 @@
 import bcrypt from "bcryptjs";
 import { User } from "../../models/User.js";
-import { generateToken, hashPassword } from "../../utils/auth.js";
+import { generateToken, hashPassword,} from "../../utils/auth.js";
 import { handleError } from "../../utils/errorHandler.js";
 import { validateUserInput } from "../../utils/validators.js";
 import { ERROR_MESSAGES } from "../../config/constants.js"; 
@@ -41,22 +41,33 @@ export const userResolvers = {
   Mutation: {
     loginMutation: async (_, { email, password }) => {
       const user = await User.findOne({ email });
-      if (!user) handleError("Invalid credentials");
+      console.log("User from UserResolver***:", user);
+      
+      if (!user) {
+        throw new Error('User not found');
+      }
 
       const validPassword = await bcrypt.compare(password, user.password);
-      if (!validPassword) handleError("Invalid credentials");
+      console.log("Valid password from UserResolver***:", validPassword);
+      
+      if (!validPassword) {
+        throw new Error('Invalid password');
+      }
+
+      const token = generateToken(user._id);
+      console.log("Token from UserResolver***:", token);
 
       return {
-        token: generateToken(user._id),
+        token,
         user: {
           id: user._id,
-          name: user.name,
           email: user.email,
+          name: user.name,
+          role: user.role,
           isAdmin: user.isAdmin
         }
       };
     },
-
     registerMutation: async (_, { input }) => {
       const validationError = validateUserInput(
         input.name,

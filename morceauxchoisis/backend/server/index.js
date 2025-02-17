@@ -24,6 +24,9 @@ const PORT = process.env.PORT || 4000;
  * @returns {Promise<void>}
  */
 async function startServer() {
+  if (!process.env.JWT_SECRET) {
+    throw new Error("JWT_SECRET environment variable is not defined");
+  }
   const server = new ApolloServer({
     typeDefs: typeDefs,
     resolvers: {
@@ -73,7 +76,6 @@ async function startServer() {
       context: async ({ req }) => {
         // Get token from header
         const token = req.headers.authorization?.split("Bearer ")[1] || "";
-        console.log("Token *********:", token);
 
         if (token) {
           try {
@@ -86,9 +88,10 @@ async function startServer() {
             console.error("Token verification error:", err);
             return { userId: null };
           }
+        } else {
+          console.log("No token provided");
+          return { userId: null };
         }
-        console.log("No token provided");
-        return { userId: null };
       },
     }),
   );

@@ -28,13 +28,15 @@ export const projectResolvers = {
      * @returns {Promise<Project>} - The created project.
      */
     createProject: async (_, { project }, { userId }) => {
+
     const defaultImageUrl = "https://res.cloudinary.com/dros6cd9l/image/upload/v1738394445/adamoficheproduit_qnsj22.png";
     console.log("Project @@@@ from project resolver:", project);
     
-    try {
+    try { 
     // Check authentication
     if (!userId) {
       handleError("Authentication required", "UNAUTHENTICATED");
+      throw new Error("Authentication required");
     }
 
     let imageUrl = defaultImageUrl;
@@ -46,25 +48,37 @@ export const projectResolvers = {
       const file = { createReadStream, filename, mimetype, encoding };
       console.log("File Object@@@@:", file);
 
-      const uploadResult = await uploadToCloudinary(file, {
-        folder: "projects",
-        allowed_formats: ["jpg", "png", "webp"],
-        max_file_size: 5000000, // 5MB limit
-      });
+      try {
+        const uploadResult = await uploadToCloudinary(file, {
+          folder: "projects",
+          allowed_formats: ["jpg", "png", "webp"],
+          max_file_size: 5000000, // 5MB limit
+        });
 
-      imageUrl = uploadResult.url;
-      console.log("Uploaded image URL:", imageUrl);
+        imageUrl = uploadResult.secure_url;
+        console.log("Uploaded image URL:", imageUrl);
+      } catch (uploadError) {
+        console.error("Error uploading image:", uploadError);
+        handleError("Image upload failed", "UPLOAD_ERROR");
+        throw new Error("Image upload failed");
+      }
     }
 
     // Create the project. If no image was provided, use the default image URL.
     const newProject = new Project({
       ...project,
-      imageUrl,
+      imageUrl: imageUrl,
       createdBy: userId,
     });
 
-    const savedProject = await newProject.save();
-    console.log("Created project@@@@:", savedProject);
+    let savedProject;
+    try {
+      savedProject = await newProject.save();
+      console.log("Saved project@@@@:", savedProject);
+    } catch (saveError) {
+      await handleError("Project save failed", "SAVE_ERROR");
+      throw new Error("Project save failed");
+    }
     return savedProject;
   } catch (error) {
      console.error("Error in createProject resolver:", error);

@@ -1,53 +1,35 @@
 "use client";
 
 import { useAuth } from "@/contexts/AuthContext";
-import { gql, useMutation } from "@apollo/client";
+import { useMutation } from "@apollo/client";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { toast } from "react-toastify";
 import { useEffect, useState } from "react";
-import { log } from "console";
-
-// const CREATE_PROJECT = gql`
-//   mutation CreateProject($input: ProjectInput!) {
-//     createProject(project: $input) {
-//       id
-//       name
-//       description
-//       projectUrl
-//       status
-//       imageUrl
-//       createdAt
-//     }
-//   }
-//   `;
+import { CREATE_PROJECT } from "@/graphql/mutations/projects";
 
 
-export const CREATE_PROJECT = gql`
-  mutation CreateProject($project: ProjectInput!) {
-    createProject(project: $project) {
-      id
-      name
-      description
-      projectUrl
-      status
-      imageUrl
-      createdAt
-    }
-  }
-`;
+
+
+
 
 const CreateProject = () => {
   const { isAdmin } = useAuth();
   const router = useRouter();
   const [createProject, { loading }] = useMutation(CREATE_PROJECT);
 
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<{
+    name: string;
+    description: string;
+    projectUrl: string;
+    imageUrl: string;
+    status: string;
+  }>({    
     name: "",
-    description: "",
+    description: "",    
     projectUrl: "",
     imageUrl: "",
-    status: "IN_PROGRESS"
+    status: "IN_PROGRESS",
   });
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [file, setFile] = useState<File | null>(null);
@@ -60,6 +42,8 @@ const CreateProject = () => {
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
+    console.log("setFile from create page:", file);
+    
     if (file) {
       setFile(file);
       const reader = new FileReader();
@@ -120,7 +104,7 @@ const handleSubmit = async (e: React.FormEvent) => {
         project: {
           name: formData.name,
           description: formData.description,
-          image: null,  
+          image: file,  
           projectUrl: formData.projectUrl,
           status: formData.status,
         },

@@ -10,13 +10,30 @@ interface User {
   email: string;
   username: string;
   isAdmin: boolean;
-  role?: 'admin' | 'user' | 'ADMIN' | 'USER';  // Add role enum
+  role: 'admin' | 'user' | 'ADMIN' | 'USER';  // Add role enum
 }
+
+interface LoginUserData {
+  email: string;
+  password: string;
+  username: string;
+  isAdmin: boolean;
+  role: 'admin' | 'user' | 'ADMIN' | 'USER';
+}
+
+interface RegisterUserData {
+  email: string;
+  password: string;
+  username: string;
+  isAdmin: boolean;
+  role: 'admin' | 'user' | 'ADMIN' | 'USER';
+}
+
 interface AuthContextType {
   isAuthenticated: boolean;
   setIsAuthenticated: Dispatch<SetStateAction<boolean>>;
   setIsAdmin: Dispatch<SetStateAction<boolean>>;
-  user: any;
+  user: User | null;
   isAdmin: boolean;
   loading: boolean;
   login: (token: string, userData: any) => Promise<void>;
@@ -51,7 +68,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
 
 
-const login = async (token: string, userData: any) => {
+const login = async (token: string, userData: LoginUserData): Promise<void> => {
   localStorage.setItem('token', token);
   localStorage.setItem('isAdmin', String(userData.isAdmin));
   localStorage.setItem('role', userData.role);
@@ -70,15 +87,17 @@ const login = async (token: string, userData: any) => {
   //   setIsAdmin(user.isAdmin);
   // };
 
-  const register = async (token: string, userData: any) => {
-    const user = {...userData, isAdmin: userData.role === 'admin'||'ADMIN'};
+  const register = async (token: string, userData: any): Promise<{ success: boolean; token: string; user: any }> => {
+    const user = {...userData, isAdmin: userData.role === 'admin' || userData.role === 'ADMIN'};
+    // console.log("USER from context", user);
+
     localStorage.setItem('token', token);
-    localStorage.setItem('user', JSON.stringify(userData));
-    localStorage.setItem('userRole', userData.role);   
+    localStorage.setItem('user', JSON.stringify(user));
+    localStorage.setItem('userRole', user.role);   
     setIsAuthenticated(true);
-    setUser(userData);
-    setIsAdmin(user?.isAdmin);
-    return {success : true, token, user : userData};
+    setUser(user);
+    setIsAdmin(user.isAdmin);
+    return {success : true, token, user};
 
   }
 

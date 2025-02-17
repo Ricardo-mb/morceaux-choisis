@@ -8,7 +8,7 @@ export const hashPassword = async (password) => {
 
 export const generateToken = (userId) => {
   return jwt.sign({ userId }, process.env.JWT_SECRET, {
-    expiresIn: "30d",
+    expiresIn: "90d",
   });
 };
 

@@ -1,16 +1,16 @@
 import { gql } from "@apollo/client";
 
+
 export const CREATE_PROJECT = gql`
-  mutation CreateProject($project: ProjectInput!) {
-    createProject(project: $project) {
+  mutation CreateProject($project: ProjectInput!, $file: Upload!) {
+    createProject(project: $project, file: $file) {
       id
       name
       description
+      projectUrl
       status
-      startDate
-      endDate
+      imageUrl
       createdAt
-      updatedAt
     }
   }
 `;
