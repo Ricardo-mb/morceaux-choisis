@@ -1,10 +1,23 @@
-"scalar Upload"
+
 
 import { PROJECT_STATUS } from "../../config/constants.js";
 
 export const projectTypeDefs = `#graphql
+
+"scalar Upload"
+
+
   enum ProjectStatus {
     ${Object.values(PROJECT_STATUS).join(" ")} 
+  }
+
+  
+
+  type User {
+    id: ID!
+    name: String!
+    isAdmin: Boolean!
+   
   }
 
   type Project {
@@ -15,6 +28,7 @@ export const projectTypeDefs = `#graphql
     projectUrl: String!
     status: ProjectStatus!
     createdAt: String!
+    # createdBy: User!
   }
 
   input ProjectFilters {
@@ -22,19 +36,11 @@ export const projectTypeDefs = `#graphql
     name: String
   }
 
-  input ProjectInput {
+  input ProjectInput { 
     name: String!
     description: String!
-    image:Upload
+    image: Upload
     projectUrl: String!
-    status: ProjectStatus
-  }
-
-  input UpdateProjectInput {
-    name: String
-    description: String
-    imageUrl: String
-    projectUrl: String
     status: ProjectStatus
   }
 
@@ -45,7 +51,7 @@ export const projectTypeDefs = `#graphql
 
   type Mutation {
     createProject(project: ProjectInput!): Project
-    updateProject(id: ID!, project: UpdateProjectInput!): Project
+    updateProject(id: ID!, project: ProjectInput!): Project
     deleteProject(id: ID!): Project
   }
 `;

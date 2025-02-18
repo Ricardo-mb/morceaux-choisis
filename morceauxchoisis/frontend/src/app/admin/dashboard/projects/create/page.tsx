@@ -22,7 +22,7 @@ import { CREATE_PROJECT } from "@/graphql/mutations/projects";
         description: "",
         projectUrl: "",
         imageUrl: "",
-        status: "",
+        status: "IN_PROGRESS",// Default status
       });
   
       const [imagePreview, setImagePreview] = useState<string | null>(null);
@@ -102,7 +102,7 @@ const handleSubmit = async (e: React.FormEvent) => {
     console.error('Project creation error:', error);
     toast.error('Failed to create project');
   }
-};
+};    
 
   if (!isAdmin) return null;
 

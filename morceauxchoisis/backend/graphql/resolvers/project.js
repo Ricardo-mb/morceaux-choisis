@@ -36,7 +36,7 @@ export const projectResolvers = {
      * @returns {Promise<Project>} - The created project.
      */
     createProject: async (_, { project }, { userId }) => {
-      console.log("Incoming project data:", project);
+      // console.log("Incoming project data:", project);
       console.log("Current userId:", userId);
       
       const defaultImageUrl =
@@ -80,7 +80,7 @@ export const projectResolvers = {
         const newProject = new Project({
           ...project,
           imageUrl: imageUrl,
-          createdBy: userId,
+          // createdBy: userId,
         });
 
         const savedProject = await newProject.save();

@@ -11,6 +11,11 @@ export const CREATE_PROJECT = gql`
       status
       imageUrl
       createdAt
+      # createdBy {
+      #   id
+      #   name
+      #   isAdmin
+      # }
     }
   }
 `;
