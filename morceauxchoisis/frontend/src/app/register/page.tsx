@@ -90,7 +90,7 @@ const RegisterMutation = () => {
     onCompleted: (data) => {
       const { token, user } = data.registerMutation;
       register(token, user);
-      router.push('/user-dashboard');
+      router.push('/logout');
     },
     onError: (error) => {
       console.error('Registration error:', error.message);

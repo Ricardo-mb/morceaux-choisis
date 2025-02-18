@@ -5,114 +5,97 @@ import { useMutation } from "@apollo/client";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { toast } from "react-toastify";
-import { useEffect, useState } from "react";
+import { useEffect, useState, ChangeEvent } from "react";
 import { CREATE_PROJECT } from "@/graphql/mutations/projects";
 
 
 
 
+    const CreateProject = () => {
+      const { isAdmin } = useAuth();
+      const router = useRouter();
+      const [createProject, { loading }] = useMutation(CREATE_PROJECT);
+  
+      // Initialize form state
+      const [formData, setFormData] = useState({
+        name: "",
+        description: "",
+        projectUrl: "",
+        imageUrl: "",
+        status: "",
+      });
+  
+      const [imagePreview, setImagePreview] = useState<string | null>(null);
+      const [file, setFile] = useState<File | null>(null);
 
+      useEffect(() => {
+        if (!isAdmin) {
+          router.push('/');
+        }
+      }, [isAdmin, router]);
 
-const CreateProject = () => {
-  const { isAdmin } = useAuth();
-  const router = useRouter();
-  const [createProject, { loading }] = useMutation(CREATE_PROJECT);
-
-  const [formData, setFormData] = useState<{
-    name: string;
-    description: string;
-    projectUrl: string;
-    imageUrl: string;
-    status: string;
-  }>({    
-    name: "",
-    description: "",    
-    projectUrl: "",
-    imageUrl: "",
-    status: "IN_PROGRESS",
-  });
-  const [imagePreview, setImagePreview] = useState<string | null>(null);
-  const [file, setFile] = useState<File | null>(null);
-
-  useEffect(() => {
-    if (!isAdmin) {
-      router.push('/dashboard');
-    }
-  }, [isAdmin, router]);
-
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    console.log("setFile from create page:", file);
-    
-    if (file) {
-      setFile(file);
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setImagePreview(reader.result as string);
+      const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files && e.target.files[0]) {
+          const selectedFile = e.target.files[0];
+          setFile(selectedFile);
+      
+          // Create preview
+          const reader = new FileReader();
+          reader.onloadend = () => {
+            setImagePreview(reader.result as string);
+          };
+          reader.readAsDataURL(selectedFile);
+        }
       };
-      reader.readAsDataURL(file);
-    }
-  };
 
-  const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
-  ) => {
-    setFormData(prev => ({
-      ...prev,
-      [e.target.name]: e.target.value
-    }));
-  };
+      const handleInputChange = (
+        e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+      ) => {
+        setFormData(prev => ({
+          ...prev,
+          [e.target.name]: e.target.value
+        }));
+      };
 
-//   const handleSubmit = async (e: React.FormEvent) => {
-//     e.preventDefault();
-//     if (!file) {
-//       toast.error('Please select an image');
-//       return;
-//     }
-//    try {
-//     const { data: projectData } = await createProject({
-//       variables: {
-//         project: {
-//           name: formData.name,
-//           description: formData.description,
-//           image: file,
-//           projectUrl: formData.projectUrl,
-//           status: formData.status,
-//         }
-//       }
-//     });
-    
-//     toast.success('Project created successfully');
-//     router.push(`/admin/dashboard/projects/${projectData.createProject.id}`);
-//   } catch (error) {
-//     console.error('Project creation error:', error);
-//     toast.error('Failed to create project');
-//   }
-// };
 
 const handleSubmit = async (e: React.FormEvent) => {
   e.preventDefault();
-  console.log("File:", file);
 
   if (!file) {
     toast.error('Please select an image');
     return;
   }
+
+  // Create a new File instance with the correct properties
+  // const imageFile = new File(
+  //   [file], 
+  //   file.name, 
+  //   { 
+  //     type: file.type,
+  //     lastModified: file.lastModified 
+  //   }
+  // );
+  
+  
   try {
     const { data } = await createProject({
       variables: {
         project: {
           name: formData.name,
           description: formData.description,
-          image: file,  
           projectUrl: formData.projectUrl,
           status: formData.status,
-        },
-        file
+          image: file
+        }
+      },
+      context: {
+        headers: {
+          'Apollo-Require-Preflight': 'true'
+        }
       }
     });
-    console.log("Project Data @@@@@@@@:", data);
-    
+
+    console.log('Created project data:', data);
     toast.success('Project created successfully');
     router.push("/admin/dashboard/projects/list");
   } catch (error) {

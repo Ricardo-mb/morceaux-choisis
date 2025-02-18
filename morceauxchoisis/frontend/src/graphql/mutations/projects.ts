@@ -2,8 +2,8 @@ import { gql } from "@apollo/client";
 
 
 export const CREATE_PROJECT = gql`
-  mutation CreateProject($project: ProjectInput!, $file: Upload!) {
-    createProject(project: $project, file: $file) {
+  mutation CreateProject($project: ProjectInput!) {
+    createProject(project: $project) {
       id
       name
       description

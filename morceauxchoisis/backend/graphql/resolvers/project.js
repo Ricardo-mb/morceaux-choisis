@@ -1,16 +1,24 @@
 import { Project } from "../../models/Project.js";
 import { handleError } from "../../utils/errorHandler.js";
 import { uploadToCloudinary } from "../../utils/imageUpload.js";
+import { GraphQLUpload } from 'graphql-upload-minimal';
 
 
 
 export const projectResolvers = {
+
+  Upload: GraphQLUpload,
+  
   Query: {
     projects: async (_, { filters }) => {
-      const query = {};
+     try {
+       const query = {};
       if (filters?.status) query.status = filters.status;
       if (filters?.name) query.name = { $regex: filters.name, $options: "i" };
-      return await Project.find(query);
+      return await Project.find(query);   
+     } catch (error) {
+      return handleError(error);
+     }
     },
     project: async (_, { id }) => {
       return await Project.findById(id);
@@ -28,63 +36,62 @@ export const projectResolvers = {
      * @returns {Promise<Project>} - The created project.
      */
     createProject: async (_, { project }, { userId }) => {
+      console.log("Incoming project data:", project);
+      console.log("Current userId:", userId);
+      
+      const defaultImageUrl =
+        "https://res.cloudinary.com/dros6cd9l/image/upload/v1738394445/adamoficheproduit_qnsj22.png";
 
-    const defaultImageUrl = "https://res.cloudinary.com/dros6cd9l/image/upload/v1738394445/adamoficheproduit_qnsj22.png";
-    console.log("Project @@@@ from project resolver:", project);
-    
-    try { 
-    // Check authentication
-    if (!userId) {
-      handleError("Authentication required", "UNAUTHENTICATED");
-      throw new Error("Authentication required");
-    }
-
-    let imageUrl = defaultImageUrl;
-
-    // Process the file upload if provided
-    if (project.image) {
-      console.log("Project Image:", project.image);
-      const { createReadStream, filename, mimetype, encoding } = await project.image;
-      const file = { createReadStream, filename, mimetype, encoding };
-      console.log("File Object@@@@:", file);
+      console.log("Project received @@@@:", project);
 
       try {
-        const uploadResult = await uploadToCloudinary(file, {
-          folder: "projects",
-          allowed_formats: ["jpg", "png", "webp"],
-          max_file_size: 5000000, // 5MB limit
+        // Check authentication
+        if (!userId) {
+          throw new Error("Authentication required");
+        }
+
+        let imageUrl = defaultImageUrl;
+
+        // Process the file upload if provided
+        if (project.image) {
+          console.log("Processing file upload...");
+          
+          // FIX: Extract stream properly
+          const { createReadStream } = project.image;
+          const stream = createReadStream(); // Correct way to get the stream
+
+          try {
+            // FIX: Pass the stream instead of an object
+            const uploadResult = await uploadToCloudinary(stream, {
+              folder: "projects",
+              allowed_formats: ["jpg", "png", "webp"],
+              max_file_size: 5000000, // 5MB limit
+            });
+
+            imageUrl = uploadResult.secure_url;
+            console.log("Uploaded image URL:", imageUrl);
+          } catch (uploadError) {
+            console.error("Error uploading image:", uploadError);
+            throw new Error("Image upload failed");
+          }
+        }
+
+        // Create the project with the uploaded image URL
+        const newProject = new Project({
+          ...project,
+          imageUrl: imageUrl,
+          createdBy: userId,
         });
 
-        imageUrl = uploadResult.secure_url;
-        console.log("Uploaded image URL:", imageUrl);
-      } catch (uploadError) {
-        console.error("Error uploading image:", uploadError);
-        handleError("Image upload failed", "UPLOAD_ERROR");
-        throw new Error("Image upload failed");
+        const savedProject = await newProject.save();
+        console.log("Saved project @@@@:", savedProject);
+
+        return savedProject;
+      } catch (error) {
+        console.error("Error in createProject resolver:", error);
+        throw new Error(error.message);
       }
-    }
-
-    // Create the project. If no image was provided, use the default image URL.
-    const newProject = new Project({
-      ...project,
-      imageUrl: imageUrl,
-      createdBy: userId,
-    });
-
-    let savedProject;
-    try {
-      savedProject = await newProject.save();
-      console.log("Saved project@@@@:", savedProject);
-    } catch (saveError) {
-      await handleError("Project save failed", "SAVE_ERROR");
-      throw new Error("Project save failed");
-    }
-    return savedProject;
-  } catch (error) {
-     console.error("Error in createProject resolver:", error);
-    handleError(error.message);
-  }
-},
+    },
     
     /**
      * Updates a project by its ID.
