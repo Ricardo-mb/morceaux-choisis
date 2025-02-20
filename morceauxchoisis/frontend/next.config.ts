@@ -13,13 +13,13 @@ const nextConfig: import('next').NextConfig = {
     // Optional: Add domains for even more flexibility (if needed)
     // domains: ['res.cloudinary.com'], // Alternative to remotePatterns
   },
-  experimental: {
-    optimizeCss: true,
-    serverActions: {
-      bodySizeLimit: '2mb'
-    },
-    // typedRoutes: true,//must be removed if u work using turbopack
-  },
+  // experimental: {
+  //   optimizeCss: true,
+  //   serverActions: {
+  //     bodySizeLimit: '2mb'
+  //   },
+  //   // typedRoutes: true,//must be removed if u work using turbopack
+  // },
   reactStrictMode: true,
   env: {
     NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,

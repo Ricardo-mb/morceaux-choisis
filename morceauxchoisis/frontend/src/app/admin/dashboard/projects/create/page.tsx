@@ -57,26 +57,14 @@ import { CREATE_PROJECT } from "@/graphql/mutations/projects";
         }));
       };
 
-
-const handleSubmit = async (e: React.FormEvent) => {
+      const handleSubmit = async (e: React.FormEvent) => {
   e.preventDefault();
 
   if (!file) {
-    toast.error('Please select an image');
+    toast.error("Please select an image");
     return;
   }
 
-  // Create a new File instance with the correct properties
-  // const imageFile = new File(
-  //   [file], 
-  //   file.name, 
-  //   { 
-  //     type: file.type,
-  //     lastModified: file.lastModified 
-  //   }
-  // );
-  
-  
   try {
     const { data } = await createProject({
       variables: {
@@ -85,24 +73,64 @@ const handleSubmit = async (e: React.FormEvent) => {
           description: formData.description,
           projectUrl: formData.projectUrl,
           status: formData.status,
-          image: file
-        }
+          image: file, // Send file directly, not Base64
+        },
       },
-      context: {
-        headers: {
-          'Apollo-Require-Preflight': 'true'
-        }
-      }
     });
 
-    console.log('Created project data:', data);
-    toast.success('Project created successfully');
-    router.push("/admin/dashboard/projects/list");
+if (data?.createProject) {
+      console.log("✅ Project Created:", data.createProject);
+      toast.success("Project created successfully");
+
+      // Optionally update UI
+      router.push("/admin/dashboard/projects/list");
+    } else {
+      console.error("❌ No data returned from the mutation");
+      toast.error("Project creation failed. Please try again.");
+    }
   } catch (error) {
-    console.error('Project creation error:', error);
-    toast.error('Failed to create project');
+    console.error("🔥 Project creation error:", error);
+    toast.error("Failed to create project");
   }
 };
+
+
+// const handleSubmit = async (e: React.FormEvent) => {
+//   e.preventDefault();
+
+//   if (!file) {
+//     toast.error("Please select an image");
+//     return;
+//   }
+
+//   try {
+//     const fileData = await new Promise((resolve, reject) => {
+//       const reader = new FileReader();
+//       reader.readAsDataURL(file);
+//       reader.onload = () => resolve(reader.result);
+//       reader.onerror = (error) => reject(error);
+//     });
+
+//     const { data } = await createProject({
+//       variables: {
+//         project: {
+//           name: formData.name,
+//           description: formData.description,
+//           projectUrl: formData.projectUrl,
+//           status: formData.status,
+//           image: fileData,
+//         },
+//       },
+//     });
+
+//     toast.success("Project created successfully");
+//     router.push("/admin/dashboard/projects/list");
+//   } catch (error) {
+//     console.error("Project creation error:", error);
+//     toast.error("Failed to create project");
+//   }
+// };
+
 
   if (!isAdmin) return null;
 

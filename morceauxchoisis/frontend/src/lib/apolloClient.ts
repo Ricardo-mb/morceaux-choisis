@@ -1,20 +1,21 @@
 import { ApolloClient, InMemoryCache, createHttpLink } from "@apollo/client";
 import { setContext } from "@apollo/client/link/context";
-import dotenv from "dotenv";
 
-dotenv.config();
 const httpLink = createHttpLink({
   uri: process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000/graphql",
   credentials: "include",
 });
 
 const authLink = setContext((_, { headers }) => {
-  const token = localStorage.getItem("token");
+  let token;
+  if (typeof window !== "undefined") {
+    token = localStorage.getItem("token");
+  }
   return {
     headers: {
       ...headers,
       authorization: token ? `Bearer ${token}` : "",
-      role: localStorage.getItem("role")|| "GUEST",
+      role: typeof window !== "undefined" ? localStorage.getItem("role") || "GUEST" : "GUEST",
     },
   };
 });
