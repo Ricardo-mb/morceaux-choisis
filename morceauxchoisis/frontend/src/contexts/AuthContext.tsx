@@ -10,7 +10,7 @@ interface User {
   email: string;
   username: string;
   isAdmin: boolean;
-  role: 'admin' | 'user' | 'ADMIN' | 'USER';  // Add role enum
+  role:  'ADMIN' | 'USER'| 'GUEST';  
 }
 
 interface LoginUserData {
@@ -18,7 +18,7 @@ interface LoginUserData {
   password: string;
   username: string;
   isAdmin: boolean;
-  role: 'admin' | 'user' | 'ADMIN' | 'USER';
+  role:  'ADMIN' | 'USER'| 'GUEST';
 }
 
 interface RegisterUserData {
@@ -26,7 +26,7 @@ interface RegisterUserData {
   password: string;
   username: string;
   isAdmin: boolean;
-  role: 'admin' | 'user' | 'ADMIN' | 'USER';
+  role:  'ADMIN' | 'USER'| 'GUEST';
 }
 
 interface AuthContextType {
@@ -87,8 +87,8 @@ const login = async (token: string, userData: LoginUserData): Promise<void> => {
   //   setIsAdmin(user.isAdmin);
   // };
 
-  const register = async (token: string, userData: any): Promise<{ success: boolean; token: string; user: any }> => {
-    const user = {...userData, isAdmin: userData.role === 'admin' || userData.role === 'ADMIN'};
+  const register = async (token: string, userData: RegisterUserData): Promise<{ success: boolean; token: string; user: any }> => {
+    const user = {...userData, isAdmin: userData.role === 'ADMIN'};
     // console.log("USER from context", user);
 
     localStorage.setItem('token', token);
