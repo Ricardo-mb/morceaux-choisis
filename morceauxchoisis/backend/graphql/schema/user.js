@@ -29,6 +29,7 @@ input ResetPasswordInput{
     email: String!
     password: String!
     isAdmin: Boolean!
+    role: String
   }
 
   input UpdateUserInput {

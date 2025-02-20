@@ -73,6 +73,7 @@ export const userResolvers = {
         input.name,
         input.email,
         input.password,
+        input.role,
         input.isAdmin,
       );
       if (validationError) handleError(validationError);
@@ -228,6 +229,7 @@ export const userResolvers = {
     },
   },
 };
+
 const checkUserPermissions = (userId, id, isAdmin) => {
   if (!userId) handleError(ERROR_MESSAGES.UNAUTHENTICATED, "UNAUTHENTICATED");
   if (id && userId !== id && !isAdmin) {
