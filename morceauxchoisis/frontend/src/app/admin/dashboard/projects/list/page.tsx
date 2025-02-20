@@ -120,6 +120,7 @@ console.log("DATA @@@@@@@@", data);
             alt={project.name}
             width={400}
             height={200}
+            priority={true}
             className="w-full h-48 object-cover rounded-md"
           />
         )}

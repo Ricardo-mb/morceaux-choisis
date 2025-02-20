@@ -41,12 +41,19 @@ async function startServer() {
      *   `status` is the error status code to return to the client.
      *   If `error` does not have an `extensions.code` property, defaults to `"SERVER_ERROR"`.
      */
+    // formatError: (error) => {
+    //   return {
+    //     message: error.message,
+    //     status: error.extensions?.code || "SERVER_ERROR",
+    //   };
+    // },
+
     formatError: (error) => {
       return {
         message: error.message,
         status: error.extensions?.code || "SERVER_ERROR",
       };
-    },
+    }
   });
 
   await server.start();
@@ -64,15 +71,6 @@ async function startServer() {
   app.use(
     "/graphql",
     expressMiddleware(server, {
-  /**
-   * A function that returns context for each GraphQL resolver.
-   * The context is an object that is passed to each resolver.
-   * In this case, it will contain the user ID if a valid token is provided.
-   * @param {import("express").Request} req - The Express request object.
-   * @returns {Object} - An object with a `userId` property.
-   *   `userId` is the user ID if a valid token is provided.
-   *   Otherwise, `userId` is `null`.
-   */
       context: async ({ req }) => {
         // Get token from header
         const token = req.headers.authorization?.split("Bearer ")[1] || "";
