@@ -10,6 +10,7 @@ import { ChevronRight } from "lucide-react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
+import { toast } from "react-toastify";
 
 
 const REGISTER_MUTATION = gql`
@@ -20,9 +21,8 @@ const REGISTER_MUTATION = gql`
         id
         name
         email
+        role
         isAdmin
-        createdAt
-        updatedAt
       }
     }
   }
@@ -37,14 +37,15 @@ const RegisterMutation = () => {
     email: "",
     password: "",
     confirmPassword: "",
-    isAdmin: false
+    isAdmin: true,
+    role:"ADMIN"
   });
   const [errorMessage, setErrorMessage] = useState("");
 
   const handleInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value.trim() }));
-    setErrorMessage("");
+    setErrorMessage(""); // Clear error message on input change
   }, []);
 
   const validateForm = () => {
@@ -83,21 +84,47 @@ const RegisterMutation = () => {
   'Email already exists': 'Cet email est déjà utilisé',
   'Name required': 'Le nom est requis',
   'Password too short': 'Le mot de passe doit contenir au moins 8 caractères',
-  default: 'Une erreur est survenue lors de la connexion'
+  default: 'Une erreur est survenue lors de l\'inscription'
 };
+
+interface Role{
+  role: "ADMIN" | "USER" | "GUEST"
+}
+
+// const validateRoles: Role[] = [
+//   { role: "ADMIN" },
+//   { role: "USER" }
+// ]
+// interface RegisterUserData {
+//   email: string;
+//   password: string;
+//   username: string;
+//   isAdmin: boolean;
+//   role: Role['role'];
+// }
 
   const [registerMutation, { loading }] = useMutation(REGISTER_MUTATION, {
     onCompleted: (data) => {
       const { token, user } = data.registerMutation;
       register(token, user);
+      toast.success('Inscription réussie !');
       router.push('/logout');
     },
     onError: (error) => {
-      console.error('Registration error:', error.message);
-      const errorKey = Object.keys(ERROR_MESSAGES).find(key => 
-        error.message.includes(key)
-      );
-      setErrorMessage(errorKey && errorKey in ERROR_MESSAGES ? ERROR_MESSAGES[errorKey as keyof typeof ERROR_MESSAGES] : ERROR_MESSAGES.default);
+      console.error('Registration error:', error);
+
+        // More robust error handling:
+        const graphQLErrors = error.graphQLErrors;
+        if (graphQLErrors) {
+          graphQLErrors.forEach(err => {
+            const message = ERROR_MESSAGES[err.message as keyof typeof ERROR_MESSAGES] || ERROR_MESSAGES.default;
+            toast.error(message); // Display error message using toast
+          });        } else if (error.networkError) {
+          toast.error(ERROR_MESSAGES['Network error']); // Handle network errors
+        } else {
+          toast.error(ERROR_MESSAGES.default); // Generic error message
+        }
+      setErrorMessage(""); // Clear the internal error message so it doesn't linger
     }
   });
 
@@ -113,14 +140,15 @@ const RegisterMutation = () => {
             name: formData.name.trim(),
             email: formData.email.toLowerCase(),
             password: formData.password,
-            isAdmin: false
+            isAdmin: formData.isAdmin,
+            role: "ADMIN"
           }
         }
       });
     } catch (error) {
-      console.error('Registration error:', error);
+      console.error('Registration error(handleSubmit):', error);
     }
-  }, [formData, registerMutation]);
+  }, [formData, registerMutation, validateForm]);
 
   return (
     <div className="min-h-screen bg-background flex items-center justify-center">

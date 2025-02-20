@@ -6,11 +6,11 @@ const userSchema = new mongoose.Schema(
     name: { type: String, required: true },
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
-    isAdmin: { type: Boolean, default: false },
+    isAdmin: { type: Boolean, default: true },
     role: { 
       type: String,
       enum: ["ADMIN", "USER", "GUEST"],
-      default: "USER"
+      default: "ADMIN"
     },
     accountStatus: { type: String, default: 'active' },
     loginCount: { type: Number, default: 0 },
