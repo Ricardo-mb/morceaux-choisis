@@ -8,3 +8,13 @@ export const GET_SIGNED_URL = gql`
     }
   }
 `;
+export const GET_CLOUDINARY_SIGNATURE = gql`
+  mutation GetCloudinarySignature {
+    getCloudinarySignature {
+      signature
+      apiKey
+      cloudName
+      timestamp
+    }
+  }
+`;

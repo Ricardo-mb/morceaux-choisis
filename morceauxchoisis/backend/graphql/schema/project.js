@@ -25,7 +25,7 @@ export const projectTypeDefs = `#graphql
   input ProjectInput {
     name: String!
     description: String!
-    image:Upload
+    image: Upload!
     projectUrl: String!
     status: ProjectStatus
   }
