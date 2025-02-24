@@ -11,7 +11,7 @@ export const projectTypeDefs = `#graphql
     id: ID!
     name: String!
     description: String!
-    imageUrl: String
+    imageUrl: String!
     projectUrl: String!
     status: ProjectStatus!
     createdAt: String!
@@ -25,9 +25,9 @@ export const projectTypeDefs = `#graphql
   input ProjectInput {
     name: String!
     description: String!
-    image: Upload!
+    imageUrl: String
     projectUrl: String!
-    status: ProjectStatus
+    status: ProjectStatus!
   }
 
   input UpdateProjectInput {
@@ -43,7 +43,15 @@ export const projectTypeDefs = `#graphql
     project(id: ID!): Project
   }
 
+  type CloudinarySignature{
+    signature: String!
+    timestamp: String!
+    apiKey: String!
+    cloudName: String!
+  }
+
   type Mutation {
+    getCloudinarySignature: CloudinarySignature!
     createProject(project: ProjectInput!): Project
     updateProject(id: ID!, project: UpdateProjectInput!): Project
     deleteProject(id: ID!): Project

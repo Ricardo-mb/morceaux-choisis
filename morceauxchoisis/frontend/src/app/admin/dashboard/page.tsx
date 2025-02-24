@@ -26,9 +26,6 @@ const GET_ADMIN_STATS = gql`
       imageUrl
       createdAt
     }
-    total
-    completedCount
-    recentUpdatesCount
   }
     `;
 

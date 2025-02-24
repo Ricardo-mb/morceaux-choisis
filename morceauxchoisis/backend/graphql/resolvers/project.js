@@ -1,7 +1,10 @@
 import { Project } from "../../models/Project.js";
 import { handleError } from "../../utils/errorHandler.js";
 import { uploadToCloudinary } from "../../utils/imageUpload.js";
+import {v2 as cloudinary} from "cloudinary";
 import { GraphQLUpload } from 'graphql-upload-minimal';
+import dotenv from "dotenv";
+dotenv.config();
 
 
 
@@ -93,8 +96,20 @@ export const projectResolvers = {
 //       }
 //     },
     
-//     /**
-//      * Updates a project by its ID.
+//       createProject: async (_, { project }, { userId }) => {
+//           if (!userId) throw new Error("Authentication required");
+
+//           let imageUrl = project.imageUrl || "https://res.cloudinary.com/dros6cd9l/image/upload/t_Text overlay/v1740325583/bupvddpg9y4uxsnjo1er.webp";
+
+//           if (project.image) {
+//             imageUrl = await uploadToCloudinary(project.image);
+//           }
+
+//   const newProject = new Project({ ...project, imageUrl, createdBy: userId });
+//   return await newProject.save();
+// },
+    /**
+     * Updates a project by its ID.
 //      * @async
 //      * @function updateProject
 //      * @param {Object} _ - Unused parameter.
@@ -129,29 +144,107 @@ export const projectResolvers = {
 //     },
 //   },
 Mutation: {
-    createProject: async (_, { project }, { userId }) => {
-      if (!userId) throw new Error("Authentication required");
+  //  getCloudinarySignature: () => {
+  //    const timestamp = Math.round(new Date().getTime() / 1000);
+  //    const params={
+  //     timestamp,
+  //     folder: "portfolio",
+  //     allowed_formats: ["jpg", "png", "webp"],  
+  //     max_file_size: 5000000, // 5MB limit,
+  //     api_key: process.env.CLOUDINARY_API_KEY,
+  //     cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  //     resource_type: "image",
+  //    }
+  //    const signature = cloudinary.utils.api_sign_request(
+  //     params,
+  //     process.env.CLOUDINARY_API_SECRET
+  //    );
+  //     console.log("Cloudinary API Key:", signature.apiKey);
+  //       console.log("Cloudinary Cloud Name:", signature.cloudName);
+  //       console.log("Generated Timestamp:", timestamp);
+  //       console.log("Generated Signature:", signature);
+  //    return { 
+  //     timestamp, 
+  //     signature,
+  //     apiKey: process.env.CLOUDINARY_API_KEY,
+  //     cloudName: process.env.CLOUDINARY_CLOUD_NAME
+  //    };
+  //  },
 
-      const defaultImageUrl = "https://res.cloudinary.com/dros6cd9l/image/upload/v1738394445/adamoficheproduit_qnsj22.png";
 
-      let imageUrl = defaultImageUrl;
+  getCloudinarySignature: () => {
+  const timestamp = Math.round(new Date().getTime() / 1000);
+  const params = {
+    timestamp,
+    folder: "portfolio",
+  };
+
+  console.log("Params:", params);
+  console.log("CLOUDINARY_API_SECRET:", process.env.CLOUDINARY_API_SECRET);
+
+  const signature = cloudinary.utils.api_sign_request(
+    params,
+    process.env.CLOUDINARY_API_SECRET
+  );
+
+  console.log("Generated Signature:", signature);
+
+  return {
+    timestamp,
+    signature,
+    apiKey: process.env.CLOUDINARY_API_KEY,
+    cloudName: process.env.CLOUDINARY_CLOUD_NAME,
+  };
+},
+    // createProject: async (_, { project }, { userId }) => {
+    //   if (!userId) throw new Error("Authentication required");
+
+    //   const defaultImageUrl = "https://res.cloudinary.com/dros6cd9l/image/upload/t_Text overlay/v1740325583/bupvddpg9y4uxsnjo1er.webp";
+
+    //   let imageUrl = defaultImageUrl;
       
-      try {
-        // Upload image only if provided
-        if (project.image) {
-          console.log("Uploading image...");
-          imageUrl = await uploadToCloudinary(project.image);
-        }
-        console.log("Image URL from create***:", imageUrl);
+    //   try {
+    //     // Upload image only if provided
+    //     if (project.image) {
+    //       console.log("Uploading image...");
+    //       imageUrl = await uploadToCloudinary(project.image);
+    //     }
+    //     console.log("Image URL from create***:", imageUrl);
 
-        // Create and save the project
-        const newProject = new Project({ ...project, imageUrl, createdBy: userId });
-        return await newProject.save();
-      } catch (error) {
-        console.error("Project Creation Error:", error);
-        throw new Error(error.message);
-      }
-    },
+    //     // Create and save the project
+    //     const newProject = new Project({ ...project, imageUrl, createdBy: userId });
+    //     return await newProject.save();
+    //   } catch (error) {
+    //     console.error("Project Creation Error:", error);
+    //     throw new Error(error.message);
+    //   }
+    // },
+    createProject: async (_, { project }, { userId }) => {
+      console.log("Received project from project resolver:", project);
+  if (!userId) throw new Error("Authentication required");
+
+  let imageUrl = project.imageUrl || "https://res.cloudinary.com/dros6cd9l/image/upload/v1740406338/portfolio/xvfhgdmu2vwhnljoyywc.jpg";
+
+  if (project.image) {
+    try {
+      console.log("Uploading image to Cloudinary...", project.image);
+      const uploadResult = await uploadToCloudinary(project.image);
+      imageUrl = uploadResult.secure_url;
+    } catch (error) {
+      console.error("Image upload failed:", error);
+      throw new Error("Image upload failed. Please check Cloudinary configuration.");
+    }
+  }
+
+  try {
+    console.log('Project object received on server:', project);
+    const newProject = new Project({ ...project, imageUrl, createdBy: userId });
+    return await newProject.save();
+  } catch (dbError) {
+    console.error("Database save error:", dbError);
+    throw new Error("Failed to save project. Please try again later.");
+  }
+},
   },
 
 };

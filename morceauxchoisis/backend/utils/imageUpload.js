@@ -63,32 +63,85 @@ cloudinary.config({
 //   });
 // };
 
-export const uploadToCloudinary = async (file) => {
+// export const uploadToCloudinary = async (file) => {
+//   try {
+//     const { createReadStream, mimetype } = await file;
+//     const stream = createReadStream();
+
+//     return new Promise((resolve, reject) => {
+//       const uploadStream = cloudinary.v2.uploader.upload_stream(
+//         {
+//           folder: "portfolio",
+//           resource_type: "image",
+//           allowed_formats: ["jpg", "png", "webp"],
+//           transformation: [{ width: 1200, crop: "limit" }, { quality: "auto" }],
+//         },
+//         (error, result) => {
+//           if (error) return reject(error);
+//           resolve(result.secure_url);
+//         }
+//       );
+
+//       stream.pipe(uploadStream);
+//     });
+//   } catch (error) {
+//     throw new Error("Cloudinary Upload Error: " + error.message);
+//   }
+// };
+
+// export const uploadToCloudinary = async (file, signature) => {
+//   const formData = new FormData();
+//   formData.append('file', file);
+//   formData.append('api_key', signature.apiKey);
+//   formData.append('timestamp', signature.timestamp);
+//   formData.append('signature', signature.signature);
+//   formData.append('folder', 'portfolio');
+  
+//   const response = await fetch(`https://api.cloudinary.com/v1_1/${signature.cloudName}/image/upload`, {
+//     method: 'POST',
+//     body: formData
+//   });
+  
+//   const data = await response.json();
+//   if(data.secure_url){
+//     return {secure_url: data.secure_url};
+//   }else{
+//     throw new Error(data.error.message || "Cloudinary Upload Error");
+//   }
+// };
+
+export const uploadToCloudinary = async (file, signature) => {
+  const formData = new FormData();
+  formData.append("file", file);
+  formData.append("api_key", signature.apiKey);
+  formData.append("timestamp", signature.timestamp);
+  formData.append("signature", signature.signature);
+  formData.append("folder", "portfolio");
+  
   try {
-    const { createReadStream, mimetype } = await file;
-    const stream = createReadStream();
+    const response = await fetch(
+      `https://api.cloudinary.com/v1_1/${signature.cloudName}/image/upload`,
+      {
+        method: "POST",
+        body: formData,
+      }
+    );
 
-    return new Promise((resolve, reject) => {
-      const uploadStream = cloudinary.v2.uploader.upload_stream(
-        {
-          folder: "portfolio",
-          resource_type: "image",
-          allowed_formats: ["jpg", "png", "webp"],
-          transformation: [{ width: 1200, crop: "limit" }, { quality: "auto" }],
-        },
-        (error, result) => {
-          if (error) return reject(error);
-          resolve(result.secure_url);
-        }
-      );
+    if (!response.ok) {
+      throw new Error(`Cloudinary upload failed: ${response.status} ${response.statusText}`);
+    }
 
-      stream.pipe(uploadStream);
-    });
+    const data = await response.json();
+    if (!data.secure_url) {
+      throw new Error("Invalid response from Cloudinary: Missing secure_url");
+    }
+
+    return { secure_url: data.secure_url };
   } catch (error) {
-    throw new Error("Cloudinary Upload Error: " + error.message);
+    console.error("Cloudinary upload error:", error);
+    throw new Error("Failed to upload image to Cloudinary. Check network and API configuration.");
   }
 };
-
 export const deleteFromCloudinary = async (publicId) => {
   return await cloudinary.v2.uploader.destroy(publicId);
 };

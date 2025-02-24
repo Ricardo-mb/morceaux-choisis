@@ -6,9 +6,17 @@ const projectSchema = new mongoose.Schema({
     required: true,
     trim: true,
   },
-  description: String,
-  imageUrl: String,
-  projectUrl: String,
+  description: {
+    type: String,
+    required: true,
+  },
+  imageUrl: {
+    type: String,
+  },
+  projectUrl: {
+    type: String,
+    required: true,
+  },
   status: {
     type: String,
     enum: ["IN_PROGRESS", "COMPLETED", "ON_HOLD"],

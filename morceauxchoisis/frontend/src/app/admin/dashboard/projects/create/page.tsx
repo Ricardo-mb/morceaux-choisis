@@ -7,7 +7,8 @@ import Image from "next/image";
 import { toast } from "react-toastify";
 import { useEffect, useState, ChangeEvent } from "react";
 import { CREATE_PROJECT } from "@/graphql/mutations/projects";
-
+import { GET_CLOUDINARY_SIGNATURE } from "@/graphql/mutations/upload";
+import { uploadToCloudinary } from "@/lib/cloudinaryUpload";
 
 
 
@@ -15,14 +16,15 @@ import { CREATE_PROJECT } from "@/graphql/mutations/projects";
       const { isAdmin } = useAuth();
       const router = useRouter();
       const [createProject, { loading }] = useMutation(CREATE_PROJECT);
+      const [getSignature] = useMutation(GET_CLOUDINARY_SIGNATURE);
   
-      // Initialize form state
+      // Initialize form state    
       const [formData, setFormData] = useState({
         name: "",
         description: "",
         projectUrl: "",
         imageUrl: "",
-        status: "",
+        status: "INPROGRESS",
       });
   
       const [imagePreview, setImagePreview] = useState<string | null>(null);
@@ -56,167 +58,136 @@ import { CREATE_PROJECT } from "@/graphql/mutations/projects";
           [e.target.name]: e.target.value
         }));
       };
-
       const handleSubmit = async (e: React.FormEvent) => {
-  e.preventDefault();
+        e.preventDefault();
+        if (!file) {
+          toast.error("Please select an image");
+          return;
+        }
 
-  if (!file) {
-    toast.error("Please select an image");
-    return;
-  }
+        try {
+          const { data: signatureData } = await getSignature();
+          if (!signatureData?.getCloudinarySignature) {
+            toast.error("Failed to get Cloudinary signature");
+            return;
+          }
 
-  try {
-    const { data } = await createProject({
-      variables: {
-        project: {
-          name: formData.name,
-          description: formData.description,
-          projectUrl: formData.projectUrl,
-          status: formData.status,
-          image: file, // Send file directly, not Base64
-        },
-      },
-    });
+          const uploadResult = await uploadToCloudinary(file, signatureData.getCloudinarySignature);
+          
+          const projectInput = {
+            ...formData,
+            imageUrl: uploadResult, // Direct assignment since uploadResult contains the secure_url
+          };
 
-if (data?.createProject) {
-      console.log("✅ Project Created:", data.createProject);
-      toast.success("Project created successfully");
+          const { data } = await createProject({
+            variables: {
+              project: projectInput,
+            },
+          });
 
-      // Optionally update UI
-      router.push("/admin/dashboard/projects/list");
-    } else {
-      console.error("❌ No data returned from the mutation");
-      toast.error("Project creation failed. Please try again.");
-    }
-  } catch (error) {
-    console.error("🔥 Project creation error:", error);
-    toast.error("Failed to create project");
-  }
-};
+          if (data?.createProject) {
+            toast.success("Project created successfully");
+            router.push("/admin/dashboard/projects/list");
+          }
+        } catch (error) {
+          console.error("Project creation error:", error);
+          toast.error("Failed to create project");
+        }
+      };
 
+    if (!isAdmin) return null;
 
-// const handleSubmit = async (e: React.FormEvent) => {
-//   e.preventDefault();
+    return (
+      <div className="max-w-4xl mx-auto p-6">
+        <h1 className="text-3xl font-bold mb-8">Create New Project</h1>
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div>
+            <label className="block text-sm font-medium mb-2">Project Name</label>
+            <input
+              type="text"
+              name="name"
+              value={formData.name}
+              onChange={handleInputChange}
+              className="w-full p-2 border rounded-md"
+              required
+            />
+          </div>
 
-//   if (!file) {
-//     toast.error("Please select an image");
-//     return;
-//   }
+          <div>
+            <label className="block text-sm font-medium mb-2">Description</label>
+            <textarea
+              name="description"
+              value={formData.description}
+              onChange={handleInputChange}
+              className="w-full p-2 border rounded-md h-32"
+            />
+          </div>
 
-//   try {
-//     const fileData = await new Promise((resolve, reject) => {
-//       const reader = new FileReader();
-//       reader.readAsDataURL(file);
-//       reader.onload = () => resolve(reader.result);
-//       reader.onerror = (error) => reject(error);
-//     });
+          <div>
+            <label className="block text-sm font-medium mb-2">Project URL</label>
+            <input
+              type="url"
+              name="projectUrl"
+              value={formData.projectUrl}
+              onChange={handleInputChange}
+              className="w-full p-2 border rounded-md"
+            />
+          </div>
 
-//     const { data } = await createProject({
-//       variables: {
-//         project: {
-//           name: formData.name,
-//           description: formData.description,
-//           projectUrl: formData.projectUrl,
-//           status: formData.status,
-//           image: fileData,
-//         },
-//       },
-//     });
+          <div>
+            <label className="block text-sm font-medium mb-2">Status</label>
+            <select
+              name="status"
+              value={formData.status}
+              onChange={handleInputChange}
+              className="w-full p-2 border rounded-md"
+            >
+              <option value="IN_PROGRESS">In Progress</option>
+              <option value="COMPLETED">Completed</option>
+              <option value="ON_HOLD">On Hold</option>
+            </select>
+          </div>
 
-//     toast.success("Project created successfully");
-//     router.push("/admin/dashboard/projects/list");
-//   } catch (error) {
-//     console.error("Project creation error:", error);
-//     toast.error("Failed to create project");
-//   }
-// };
+          <div>
+            <label className="block text-sm font-medium mb-2">Project Image</label>
+            <input
+              type="file"
+              accept="image/*"
+              onChange={handleFileChange}
+              className="w-full p-2 border rounded-md"
+            />
+            {imagePreview && (
+              <div className="mt-4">
+                <Image
+                  src={imagePreview}
+                  alt="Preview"
+                  width={200}
+                  height={200}
+                  className="object-cover rounded-md"
+                  priority={true}
+                  onError={(e)=>{
+                    const img = e.target as HTMLImageElement;
+                    img.src = '/placeholder.png';//Fallback image
+                  }}
+                  loader={({src, width, quality})=> {
+                    return `${src}?w=${width}&q=${quality || 75}`
+                  }}
+                />
+              </div>
+            )}
+          </div>
 
-
-  if (!isAdmin) return null;
-
-  return (
-    <div className="max-w-4xl mx-auto p-6">
-      <h1 className="text-3xl font-bold mb-8">Create New Project</h1>
-      <form onSubmit={handleSubmit} className="space-y-6">
-        <div>
-          <label className="block text-sm font-medium mb-2">Project Name</label>
-          <input
-            type="text"
-            name="name"
-            value={formData.name}
-            onChange={handleInputChange}
-            className="w-full p-2 border rounded-md"
-            required
-          />
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium mb-2">Description</label>
-          <textarea
-            name="description"
-            value={formData.description}
-            onChange={handleInputChange}
-            className="w-full p-2 border rounded-md h-32"
-          />
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium mb-2">Project URL</label>
-          <input
-            type="url"
-            name="projectUrl"
-            value={formData.projectUrl}
-            onChange={handleInputChange}
-            className="w-full p-2 border rounded-md"
-          />
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium mb-2">Status</label>
-          <select
-            name="status"
-            value={formData.status}
-            onChange={handleInputChange}
-            className="w-full p-2 border rounded-md"
+          <button
+            type="submit"
+            disabled={loading}
+            className={`bg-pink-500 text-white px-6 py-2 rounded-md transition-colors
+              ${loading ? 'opacity-50 cursor-not-allowed' : 'hover:bg-blue-600'}`}
           >
-            <option value="IN_PROGRESS">In Progress</option>
-            <option value="COMPLETED">Completed</option>
-            <option value="ON_HOLD">On Hold</option>
-          </select>
-        </div>
+            {loading ? 'Creating...' : 'Create Project'}
+          </button>
+        </form>
+      </div>
+    );
+  };
 
-        <div>
-          <label className="block text-sm font-medium mb-2">Project Image</label>
-          <input
-            type="file"
-            accept="image/*"
-            onChange={handleFileChange}
-            className="w-full p-2 border rounded-md"
-          />
-          {imagePreview && (
-            <div className="mt-4">
-              <Image
-                src={imagePreview}
-                alt="Preview"
-                width={200}
-                height={200}
-                className="object-cover rounded-md"
-              />
-            </div>
-          )}
-        </div>
-
-        <button
-          type="submit"
-          disabled={loading}
-          className={`bg-pink-500 text-white px-6 py-2 rounded-md transition-colors
-            ${loading ? 'opacity-50 cursor-not-allowed' : 'hover:bg-blue-600'}`}
-        >
-          {loading ? 'Creating...' : 'Create Project'}
-        </button>
-      </form>
-    </div>
-  );
-};
-
-export default CreateProject;
+  export default CreateProject;

@@ -10,16 +10,11 @@ const nextConfig: import('next').NextConfig = {
         pathname: '/**', // Allow any path after the hostname
       },
     ],
-    // Optional: Add domains for even more flexibility (if needed)
-    // domains: ['res.cloudinary.com'], // Alternative to remotePatterns
+    domains: ['res.cloudinary.com'],
+    minimumCacheTTL: 60,
+    formats: ['image/webp'],
+  
   },
-  // experimental: {
-  //   optimizeCss: true,
-  //   serverActions: {
-  //     bodySizeLimit: '2mb'
-  //   },
-  //   // typedRoutes: true,//must be removed if u work using turbopack
-  // },
   reactStrictMode: true,
   env: {
     NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,
