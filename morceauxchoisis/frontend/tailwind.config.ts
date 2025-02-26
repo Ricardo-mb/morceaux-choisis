@@ -51,6 +51,9 @@ export default {
           "5": "hsl(var(--chart-5))",
         },
       },
+      backgroundImage: {
+        'dark-gradient': 'radial-gradient(to bottom, #648880, #293f50)',
+      },
       borderRadius: {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",

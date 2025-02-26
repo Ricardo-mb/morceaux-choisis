@@ -18,7 +18,9 @@ export default function RootLayout({
     <>
       <AuthProvider>
         <html lang='en' suppressHydrationWarning>
-          <body>
+          <body 
+          // className="dark:bg-[#466368] dark:bg-dark-gradient"
+          >
             <ApolloWrapper>
               <ThemeProvider
                 attribute='class'
