@@ -89,13 +89,31 @@ export const userResolvers = {
 
        try {
           const hashedPassword = await bcrypt.hash(input.password, 12);
+
+          // const user = new User({
+          //   name: input.name,
+          //   email: input.email,
+          //   password: hashedPassword,
+          //   role: input.role || 'USER',
+          //   isAdmin: input.role === 'ADMIN' ? true : false,
+          //   accountStatus: 'active',
+          //   loginCount: 0,
+          //   skills: [],
+          //   createdAt: new Date().toISOString(),
+          //   updatedAt: new Date().toISOString(),
+          // });
+          
           
           const user = new User({
             ...input,
             password: hashedPassword,
             role: input.role || 'USER',
             isAdmin: input.isAdmin || false,
-            createdAt: new Date().toISOString()
+            accountStatus: 'active',
+            loginCount: 0,
+            skills: [],
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
           });
 
           const savedUser = await user.save();

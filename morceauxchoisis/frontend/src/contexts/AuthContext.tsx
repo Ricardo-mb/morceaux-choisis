@@ -89,7 +89,7 @@ const login = async (token: string, userData: LoginUserData): Promise<void> => {
 
   const register = async (token: string, userData: RegisterUserData): Promise<{ success: boolean; token: string; user: any }> => {
     const user = {...userData, isAdmin: userData.role === 'ADMIN'};
-    // console.log("USER from context", user);
+    console.log("USER from context", user);
 
     localStorage.setItem('token', token);
     localStorage.setItem('user', JSON.stringify(user));

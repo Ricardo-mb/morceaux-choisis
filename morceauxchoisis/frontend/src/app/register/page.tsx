@@ -140,8 +140,8 @@ interface Role{
             name: formData.name.trim(),
             email: formData.email.toLowerCase(),
             password: formData.password,
-            isAdmin: formData.isAdmin,
-            role: "ADMIN"
+            isAdmin: false,
+            role: "USER"
           }
         }
       });
