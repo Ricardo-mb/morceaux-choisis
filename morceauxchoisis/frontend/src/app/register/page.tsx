@@ -37,8 +37,8 @@ const RegisterMutation = () => {
     email: "",
     password: "",
     confirmPassword: "",
-    isAdmin: true,
-    role:"ADMIN"
+    isAdmin: false,
+    role:"USER"
   });
   const [errorMessage, setErrorMessage] = useState("");
 

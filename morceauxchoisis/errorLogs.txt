@@ -1,0 +1,15 @@
+Excellent! I'm glad to hear it's working now!
+
+The fix was successful because GraphQL's resolver system requires a specific structure to match your schema definition. When you define a mutation in your schema like deleteProject(id: ID!): Project, GraphQL looks for a corresponding function with that exact name inside the Mutation object of your resolvers.
+
+In your original code, the function was defined at the top level of the projectResolvers object rather than nested inside the Mutation property. This meant that when Apollo Server was mapping resolvers to schema definitions, it couldn't find a function called deleteProject in the expected location.
+
+Moving the function inside the Mutation object creates the proper path that GraphQL needs to follow:
+
+Find the resolver map
+Look in the Mutation object
+Find a function with the name matching the operation
+This structure is essential for maintaining the direct correlation between your schema and resolver implementations. Your implementation itself was solid - capturing the project data before deletion ensures you can still return the complete object even after it's removed from the database.
+
+Great job on resolving this issue!
+

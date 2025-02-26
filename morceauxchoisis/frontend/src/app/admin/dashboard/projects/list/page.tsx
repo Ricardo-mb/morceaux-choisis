@@ -111,8 +111,8 @@ console.log("DATA @@@@@@@@", data);
       {error && <div className="text-red-500 text-center">Error loading projects</div>}
 
      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-  {filteredProjects?.map((project) => (
-    <Card key={project.id} className="overflow-hidden">
+  {filteredProjects?.map((project, index) => (
+    <Card key={`${project.id}-${index}`} className="overflow-hidden">
       <CardHeader>
         {project.imageUrl && (
           <Image

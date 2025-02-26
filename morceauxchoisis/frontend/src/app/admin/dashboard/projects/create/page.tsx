@@ -24,7 +24,7 @@ import { uploadToCloudinary } from "@/lib/cloudinaryUpload";
         description: "",
         projectUrl: "",
         imageUrl: "",
-        status: "INPROGRESS",
+        status: "IN_PROGRESS",
       });
   
       const [imagePreview, setImagePreview] = useState<string | null>(null);

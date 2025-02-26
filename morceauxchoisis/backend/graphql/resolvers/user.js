@@ -93,7 +93,8 @@ export const userResolvers = {
           const user = new User({
             ...input,
             password: hashedPassword,
-            role: input.role || 'USER', // Default role if not provided
+            role: input.role || 'USER',
+            isAdmin: input.isAdmin || false,
             createdAt: new Date().toISOString()
           });
 
