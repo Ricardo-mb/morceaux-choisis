@@ -1,8 +1,9 @@
-"scalar Upload"
-
 import { PROJECT_STATUS } from "../../config/constants.js";
 
 export const projectTypeDefs = `#graphql
+
+"scalar Upload"
+
   enum ProjectStatus {
     ${Object.values(PROJECT_STATUS).join(" ")} 
   }
@@ -54,6 +55,7 @@ export const projectTypeDefs = `#graphql
     getCloudinarySignature: CloudinarySignature!
     createProject(project: ProjectInput!): Project
     updateProject(id: ID!, project: UpdateProjectInput!): Project
-    deleteProject(id: ID!): Project
+    # deleteProject(id: ID!): Project
+    deleteProjectWithKey(id: ID!, adminKey: String): Project
   }
 `;

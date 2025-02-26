@@ -30,10 +30,20 @@ export const UPDATE_PROJECT = gql`
   }
 `;
 
-export const DELETE_PROJECT = gql`
-  mutation DeleteProject($id: ID!) {
-    deleteProject(id: $id) {
+// export const DELETE_PROJECT = gql`
+//   mutation DeleteProject($id: ID!) {
+//     deleteProject(id: $id) {
+//       id
+//       name
+//     }
+//   }
+// `;
+
+export const DELETE_PROJECT_WITH_KEY = gql`
+  mutation DeleteProjectWithKey($id: ID!, $adminKey: String!) {
+    deleteProjectWithKey(id: $id, adminKey: $adminKey) {
       id
+      name
     }
   }
 `;

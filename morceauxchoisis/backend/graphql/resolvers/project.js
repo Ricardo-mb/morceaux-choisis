@@ -4,6 +4,7 @@ import { uploadToCloudinary } from "../../utils/imageUpload.js";
 import {v2 as cloudinary} from "cloudinary";
 import { GraphQLUpload } from 'graphql-upload-minimal';
 import dotenv from "dotenv";
+import mongoose from "mongoose";
 dotenv.config();
 
 
@@ -218,34 +219,237 @@ Mutation: {
     //     console.error("Project Creation Error:", error);
     //     throw new Error(error.message);
     //   }
-    // },
-    createProject: async (_, { project }, { userId }) => {
+      // },
+  createProject: async (_, { project }, { userId }) => {
       console.log("Received project from project resolver:", project);
-  if (!userId) throw new Error("Authentication required");
+      if (!userId) throw new Error("Authentication required");
 
-  let imageUrl = project.imageUrl || "https://res.cloudinary.com/dros6cd9l/image/upload/v1740406338/portfolio/xvfhgdmu2vwhnljoyywc.jpg";
+      let imageUrl = project.imageUrl || "https://res.cloudinary.com/dros6cd9l/image/upload/v1740406338/portfolio/xvfhgdmu2vwhnljoyywc.jpg";
 
-  if (project.image) {
-    try {
-      console.log("Uploading image to Cloudinary...", project.image);
-      const uploadResult = await uploadToCloudinary(project.image);
-      imageUrl = uploadResult.secure_url;
-    } catch (error) {
-      console.error("Image upload failed:", error);
-      throw new Error("Image upload failed. Please check Cloudinary configuration.");
-    }
-  }
+      if (project.image) {
+        try {
+          console.log("Uploading image to Cloudinary...", project.image);
+          const uploadResult = await uploadToCloudinary(project.image);
+          imageUrl = uploadResult.secure_url;
+        } catch (error) {
+          console.error("Image upload failed:", error);
+          throw new Error("Image upload failed. Please check Cloudinary configuration.");
+        }
+      }
 
-  try {
-    console.log('Project object received on server:', project);
-    const newProject = new Project({ ...project, imageUrl, createdBy: userId });
-    return await newProject.save();
-  } catch (dbError) {
-    console.error("Database save error:", dbError);
-    throw new Error("Failed to save project. Please try again later.");
-  }
-},
+      try {
+        console.log('Project object received on server:', project);
+        const newProject = new Project({ ...project, imageUrl, createdBy: userId });
+        return await newProject.save();
+      } catch (dbError) {
+        console.error("Database save error:", dbError);
+        throw new Error("Failed to save project. Please try again later.");
+      }
+    },
   },
+  // deleteProject: async (_, { id },context) => {
+  //    console.log("Received ID from client:", id);
+  //   //Convert string ID to MOngoose ObjectId
+  //   const projectId = new mongoose.Types.fromString(id);
+  //   console.log("Converted ID to ObjectId:", projectId);
+
+  //   const project = await Project.findById(projectId);
+  //   console.log("Project found:", project);
+
+  //   if (!project) {
+  //     console.error('Project not found');
+  //     throw new Error("Project not found");
+  //   }
+  //   //Check if the user is authorized to delete the project
+  //   if(context.userId !== project.createdBy.toString()) {
+  //     throw new Error("You are not authorized to delete this project");
+  //   }
+
+  //    try {
+  //   const deletedProject = await Project.findByIdAndDelete(projectId);
+  //   console.log('Project deleted successfully:', deletedProject);
+  //   if (!deletedProject) {
+  //     console.error('Project not deleted');
+  //   }
+  //   return deletedProject;
+  // } catch (error) {
+  //   console.error('Error deleting project:', error);
+  //   throw new Error('Failed to delete project. Please try again later.');
+  // }
+
+  //   // try {
+  //   //   const deletedProject = await Project.findByIdAndDelete(projectId);
+  //   //   return deletedProject;
+  //   // } catch (error) {
+  //   //   console.error("Error deleting project:", error);
+  //   //   throw new Error("Failed to delete project. Please try again later.");
+  //   // }
+  // }
+
+
+  // deleteProject: async (_, { id }) => {
+  //     try {
+  //       console.log(`Attempting to delete project with ID: ${id}`);
+  //       const deletedProject = await Project.findByIdAndDelete(id);
+  //       console.log(`Result of delete operation: ${deletedProject}`);
+  //       return deletedProject;
+  //     } catch (error) {
+  //       console.error(`Error deleting project with ID: ${id}`, error);
+  //       throw new Error("Failed to delete project. Please try again later.");
+  //     }
+  //   },
+ 
+  // deleteProject: async (_, { id }) => {
+  // try {
+  //   console.log(`Attempting to delete project with ID: ${id}`);
+
+  //   // Convert id to ObjectId if it's not already
+  //   const objectId = mongoose.Types.ObjectId.isValid(id) ? new mongoose.Types.ObjectId(id) : id;
+  //   const deletedProject = await Project.findByIdAndDelete(objectId);
+
+  //   if (!deletedProject) {
+  //       throw new Error("Project not found")
+  //   }
+
+  //   console.log(`Result of delete operation: ${deletedProject}`);
+  //   return deletedProject; // Return the deleted project (or null if not found)
+  //   } catch (error) {
+  //     console.error(`Error deleting project with ID: ${id}`, error);
+  //     // throw new Error("Failed to delete project. Please try again later."); // Throw an error
+  //     return handleError(error);
+  //   }
+  // },
+
+
+  // deleteProject: async (_, { id }) => {
+  //   console.log("Received ID from client:", id);
+  // try {
+  //   const result = await Project.deleteOne({ _id: id });
+  //   console.log("Result of delete operation:", result);
+  //   if (result.deletedCount === 0) {
+  //     throw new Error("Project not found");
+  //   }
+  //   // Need to fetch the project before deletion to return it
+  //   const project = await Project.findById(id);
+  //   console.log("Project after deletion:", project);
+  //   return project;
+  //   } catch (error) {
+  //     console.error(`Error deleting project with ID: ${id}`, error);
+  //     throw new Error("Failed to delete project. Please try again later.");
+  //   }
+  // }
+
+
+  //   deleteProject: async (_, { id }) => {
+  //   try {
+  //     // First find the project
+  //     const project = await Project.findById(id);
+  //     console.log("Project found:", project);
+
+  //     if (!project) {
+  //       throw new Error("Project not found");
+  //     }
+      
+  //     // Then delete it
+  //     await Project.deleteOne({ _id: id });
+      
+  //     return project; // Return the found project (which is now deleted)
+  //   } catch (error) {
+  //     console.error(`Error deleting project with ID: ${id}`, error);
+  //     throw new Error("Failed to delete project. Please try again later.");
+  //   }
+  // }
+
+//   deleteProject: async (_, { id }, { userId }) => {
+//   try {
+//     // Find the project first
+//     const project = await Project.findById(id);
+//     if (!project) {
+//       throw new Error("Project not found");
+//     }
+    
+//     // Check if user is authorized to delete
+//     if (userId !== project.createdBy.toString()) {
+//       throw new Error("You are not authorized to delete this project");
+//     }
+    
+//     // Delete the project
+//     await project.deleteOne();
+//     return project;
+//   } catch (error) {
+//     console.error(`Error deleting project with ID: ${id}`, error);
+//     throw new Error("Failed to delete project. Please try again later.");
+//   }
+// }
+
+
+// deleteProject: async (_, { id }) => {
+//   try {
+//     // First find the project to ensure it exists and to return it later
+//     const project = await Project.findById(id);
+//     if (!project) {
+//       throw new Error("Project not found");
+//     }
+    
+//     // Convert to a plain object that can be returned after deletion
+//     const projectToReturn = project.toObject();
+    
+//     // Now delete it
+//     await Project.deleteOne({ _id: id });
+    
+//     return projectToReturn; // Return the project data even though it's deleted from DB
+//   } catch (error) {
+//     console.error(`Error deleting project with ID: ${id}`, error);
+//     throw new Error("Failed to delete project. Please try again later.");
+//   }
+// }
+
+    // deleteProject: async (_, { id }) => {
+    //   const deletedProject = await Project.findByIdAndDelete(id);
+    //   return deletedProject;
+    // },
+
+deleteProject: async (_, { id }) => {
+      try {
+        console.log(`Attempting to delete project with ID: ${id}`);
+        const deletedProject = await Project.findByIdAndDelete(id);
+        console.log(`Result of delete operation: ${deletedProject}`);
+        if (!deletedProject) {
+          console.log(`No project found with ID: ${id}`);
+        } else {
+          console.log(`Deleted project with ID: ${id}`);
+        }
+        return deletedProject;
+      } catch (error) {
+        console.error(`Error deleting project with ID: ${id}`, error);
+        throw new Error("Failed to delete project. Please try again later.");
+      }
+    },
+
+    deleteProjectWithKey: async (_, { id, adminKey }) => {
+      try {
+        console.log(`Attempting to delete project with ID: ${id} using admin key`);
+        console.log(`Admin Key: ${adminKey}`);
+        // Verify the admin key
+        if (adminKey !== process.env.ADMIN_SECRET_KEY) {
+          console.log('Invalid admin key');
+          throw new Error('Invalid admin key');
+        }
+        console.log('Admin key verified');
+        // Perform the deletion
+        const deletedProject = await Project.findByIdAndDelete(id);
+        console.log(`Result of delete operation with key: ${deletedProject}`);
+        if (!deletedProject) {
+          console.log(`No project found with ID: ${id}`);
+          throw new Error(`Project with ID ${id} not found`);
+        }
+        console.log(`Deleted project with ID: ${id} using admin key`);
+        return deletedProject;
+      } catch (error) {
+        console.error(`Error deleting project with key and ID: ${id}`, error);
+        throw new Error("Failed to delete project. Please try again later.");
+      }
+    },
 
 };
 
