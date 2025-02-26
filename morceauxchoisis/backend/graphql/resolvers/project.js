@@ -431,7 +431,7 @@ deleteProject: async (_, { id }) => {
         console.log(`Attempting to delete project with ID: ${id} using admin key`);
         console.log(`Admin Key: ${adminKey}`);
         // Verify the admin key
-        if (adminKey !== process.env.ADMIN_SECRET_KEY) {
+        if (adminKey !== process.env.NEXT_PUBLIC_ADMIN_SECRET_KEY) {
           console.log('Invalid admin key');
           throw new Error('Invalid admin key');
         }
