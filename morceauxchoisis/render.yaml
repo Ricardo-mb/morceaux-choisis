@@ -8,10 +8,10 @@ services:
     envVars:
       - key: NODE_VERSION
         value: "18.8.2"
-      - key: DATABASE_URL
+      - key: MONGODB_URI
         fromDatabase:
-          name: your-database-name
-          property: connectionString
+          name: morceauxc-cs
+          property: mongodb+srv://aymardmb:Openmongo-75@cluster0.bnpgltz.mongodb.net/morceaux-cs?retryWrites=true&w=majority
 
   - type: web
     name: frontend
