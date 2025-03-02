@@ -1,63 +1,26 @@
 services:
-  # Backend API service
   - type: web
-    name: morceauxchoisis-backend
-
+    name: backend
     runtime: node
-    region: ohio  # Choose a region close to your users
-    plan: free  # or starter/standard based on your needs
+    plan: free
     buildCommand: cd backend && npm install
-    startCommand: cd backend && node server.js
+    startCommand: cd backend && node index.js
     envVars:
-      - key: MONGODB_URI
-        value: mongodb+srv://aymardmb:Openmongo-75@cluster0.bnpgltz.mongodb.net/morceaux-cs?retryWrites=true&w=majority
-      - key: PORT
-        value: 4000
-      - key: NODE_ENV
-        value: production
-      - key: JWT_SECRET
-        value: fd3389b8e10303580a6df0c68c7633f0c2a0dbe46824271dbfd615dd2c9ec1a8
-      - key: JWT_REFRESH_SECRET
-        value: nQ6hcyJ7hhAAMisum0hwKvyL87V6q75KYWVyFI6xkUGKhEDUtQAmncliKlV
-      - key: CLOUDINARY_CLOUD_NAME
-        value: dros6cd9l
-      - key: CLOUDINARY_API_KEY
-        value: 975224189192827
-      - key: CLOUDINARY_API_SECRET
-        value: N1sjUsUBmp2y_DFJSKBPDxs2V18
-      - key: CORS_ORIGIN
-        fromService:
-          name: morceauxchoisis-frontend
-          type: web
-          property: url
+      - key: NODE_VERSION
+        value: "18.8.2"
+      - key: DATABASE_URL
+        fromDatabase:
+          name: your-database-name
+          property: connectionString
 
-  # Frontend Next.js application
   - type: web
-    name: morceauxchoisis-frontend
+    name: frontend
     runtime: node
-    region: ohio  # Choose a region close to your users
-    plan: free  # or starter/standard based on your needs
+    plan: free
     buildCommand: cd frontend && npm install && npm run build
     startCommand: cd frontend && npm start
     envVars:
-      - key: NEXT_PUBLIC_API_URL
-        fromService:
-          name: morceauxchoisis-backend
-          type: web
-          property: url
-          appendPath: /graphql
-      - key: NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME
-        value: dros6cd9l
-      - key: NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET
-        value: uploadPreset
-      - key: NEXT_PUBLIC_ADMIN_SECRET_KEY
-        value: 303580a6df0c68c7633f0c2a0dbe46824271dbfd615dd2c9ec5214
-      - key: NEXT_PUBLIC_CLOUDINARY_API_KEY
-        value: 975224189192827
-      - key: NEXT_PUBLIC_CLOUDINARY_API_SECRET
-        value: N1sjUsUBmp2y_DFJSKBPDxs2V18
-      - key: NEXT_PUBLIC_CLOUDINARY_URL
-        value: https://api.cloudinary.com/v1_1/dros6cd9l/image/upload
-      - key: NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET
-        value: uploadPreset
-    
+      - key: NODE_VERSION
+        value: "18.8.2"
+      - key: REACT_APP_BACKEND_URL
+        value: "your-backend-service-url"
