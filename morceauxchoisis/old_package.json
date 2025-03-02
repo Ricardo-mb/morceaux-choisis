@@ -14,16 +14,14 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "security": "npm audit",
-    "security:fix": "npm audit fix",
+    "security:fix": "npm audit",
     "dev:backend": "nodemon backend/server/index.js",
     "dev:frontend": "cd frontend && npm run dev",
     "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
     "data:import": "node backend/seeder.js",
     "data:destroy": "node backend/seeder.js -d",
-    "build:frontend": "cd frontend && npm run build",
-    "start:frontend": "cd frontend && npm run start",
-    "build": "npm run build:frontend",
-    "start": "concurrently \"npm run dev:backend\" \"npm run start:frontend\"",
+    "build": "cd frontend && npm run build",
+    "start": "cd frontend && npm run start",
     "lint": "cd frontend && npm run lint",
     "type-check": "cd frontend && tsc --noEmit",
     "lint:fix": "cd frontend && npm run lint:fix",
@@ -55,7 +53,6 @@
     "colors": "^1.4.0",
     "concurrently": "^9.1.0",
     "morgan": "^1.10.0",
-    "nodemon": "^3.1.7",
-    "prettier": "^2.8.0"
+    "nodemon": "^3.1.7"
   }
 }
