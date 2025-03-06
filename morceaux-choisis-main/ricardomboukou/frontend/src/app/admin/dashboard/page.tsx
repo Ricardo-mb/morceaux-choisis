@@ -1,7 +1,6 @@
 
 "use client";
 
-import { useAuth } from "@/contexts/AuthContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useQuery } from "@apollo/client";
 import { gql } from "@apollo/client"; 
@@ -13,7 +12,7 @@ import {
   Settings 
 } from "lucide-react";
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
+
 
 const GET_ADMIN_STATS = gql`
   query GetAdminStats {
@@ -25,15 +24,18 @@ const GET_ADMIN_STATS = gql`
       status
       imageUrl
       createdAt
+        recentActivity {
+          id
+          description
+        }
+      }
     }
-  }
-    `;
+  `;
 
 export default function AdminDashboard() {
 
-  // const { logout } = useAuth();
  
-  const { data, loading } = useQuery(GET_ADMIN_STATS);
+  const { data } = useQuery(GET_ADMIN_STATS);
 
   const quickActions = [
     {
@@ -50,6 +52,10 @@ export default function AdminDashboard() {
     }
   ];
 
+  interface Activity {
+    id: string;
+    description: string;
+  }
   return (
     <div className="p-8">
       <h1 className="text-3xl font-bold mb-8">Admin Dashboard</h1>
@@ -123,7 +129,7 @@ export default function AdminDashboard() {
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
-              {data?.recentActivity?.map((activity: any) => (
+              {data?.recentActivity?.map((activity: Activity) => (
                 <div key={activity.id} className="flex items-center">
                   <div className="w-2 h-2 rounded-full bg-pink-500 mr-4" />
                   <span>{activity.description}</span>
@@ -132,14 +138,6 @@ export default function AdminDashboard() {
             </div>
           </CardContent>
         </Card>
-        {/* <Button 
-        onClick={logout}
-        variant="destructive"
-        className="flex items-center gap-2"
-      >
-        <Button className="h-4 w-4" />
-        Logout
-      </Button> */}
       </div>
     </div>
   );

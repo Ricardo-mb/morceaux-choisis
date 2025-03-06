@@ -70,7 +70,7 @@ console.log("DATA @@@@@@@@", data);
         await deleteProject({ variables: { id } });
         toast.success('Project deleted successfully');
       } catch (error) {
-        toast.error('Failed to delete project');
+        toast.error(`Failed to delete project: ${error instanceof Error ? error.message : 'Unknown error'}`);         
       }
     }
   };

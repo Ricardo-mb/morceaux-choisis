@@ -16,9 +16,9 @@ const About = () => {
   const scrollToTimeline = () => {
     timelineRef.current?.scrollIntoView({ behavior: "smooth" });
   };
-  const scrollToSkills = () => {
-    skillsRef.current?.scrollIntoView({ block: "end" });
-  };
+  // const scrollToSkills = () => {
+  //   skillsRef.current?.scrollIntoView({ block: "end" });
+  // };
 
   const timelineData = [
     {
@@ -82,7 +82,7 @@ const About = () => {
             Formation & Experience
           </span>
           <h1 className="text-4xl md:text-6xl font-bold mb-6 tracking-tight dark:text-white">
-            Bonjour, moi c'est Ricardo: Développeur Web Fullstack Passionné
+            Bonjour, moi c&apos; est Ricardo: Développeur Web Fullstack Passionné
           </h1>
           <p className="text-lg md:text-xl text-gray-600 dark:text-gray-300 mb-8">
             Vous trouverez ici les éléments de mon parcours à travers une chronologie interactive qui illustre mes compétences techniques, mes réalisations et mon expérience professionnelle de manière globale.
@@ -107,7 +107,7 @@ const About = () => {
             onClick={scrollToTimeline}
             className="group relative overflow-hidden px-6 py-3 rounded-full bg-primary hover:bg-primary/90 text-white transition-all duration-300"
           >
-            C'est par ici
+            C&apos; est par ici
             <ChevronDown className="ml-2 w-4 h-4 inline-block group-hover:animate-bounce" />
           </Button>
         </motion.div>

@@ -1,12 +1,12 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import { ChevronRight } from "lucide-react";
-import Link from "next/link";
+import Link from "next/link"; 
 import { useMutation } from '@apollo/client';
 import { useRouter } from 'next/navigation';
 import { useContext } from 'react';
@@ -34,9 +34,9 @@ const LoginMutation = () => {
     return () => {
       resetForm();
     };
-  }, []);
+  }, [resetForm]);
 
-  const ERROR_MESSAGES = {
+  const ERROR_MESSAGES = useMemo(() => ({
     'Invalid credentials': 'Email ou mot de passe incorrect',
     'User not found': 'Aucun compte trouvé avec cet email',
     'Network error': 'Problème de connexion au serveur',
@@ -44,7 +44,9 @@ const LoginMutation = () => {
     'Password required': 'Le mot de passe est requis',
     'Email required': 'L\'email est requis',
     default: 'Une erreur est survenue lors de la connexion'
-  };
+  }
+  ), []);
+
 
   const handleInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -165,9 +167,9 @@ const LoginMutation = () => {
             </form>
 
             <div className="text-center text-sm">
-              <span className="text-muted-foreground">Vous n'avez pas de compte? </span>
+              <span className="text-muted-foreground">Vous n&apos;avez pas de compte? </span>
               <Link href="/register" className="text-primary hover:underline font-medium">
-                S'inscrire
+                S&apos;inscrire
               </Link>
             </div>
           </Card>
