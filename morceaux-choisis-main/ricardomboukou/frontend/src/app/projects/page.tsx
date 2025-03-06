@@ -116,7 +116,7 @@ export default function Page() {
               Projets
             </h1>
             <p className='mx-auto max-w-2xl text-center text-lg text-muted-foreground sm:text-xl'>
-              "Explorez mes projets récents et découvrez comment je peux aider votre entreprise à atteindre ses objectifs."
+              Explorez mes projets récents et découvrez comment je peux aider votre entreprise à atteindre ses objectifs.
             </p>
           </div>
         </div>

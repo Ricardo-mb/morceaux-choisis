@@ -36,7 +36,7 @@ interface AuthContextType {
   user: User | null;
   isAdmin: boolean;
   loading: boolean;
-  login: (token: string, userData: any) => Promise<void>;
+  login: (token: string, userData: LoginUserData) => Promise<void>;
   register: (token: string, userData: any) => Promise<{ success: boolean; token: string; user: any }>;
   logout: () => void;
 }

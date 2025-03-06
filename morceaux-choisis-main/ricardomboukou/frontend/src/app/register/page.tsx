@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useContext, useCallback } from "react";
-import { gql, useMutation } from '@apollo/client';
+import { useMutation } from '@apollo/client';
 import { AuthContext } from '@/contexts/AuthContext';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -12,22 +12,6 @@ import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import { REGISTER_MUTATION } from "@/graphql/mutations/user";
-
-
-// const REGISTER_MUTATION = gql`
-//   mutation RegisterMutation($input: UserInput!) {
-//     registerMutation(input: $input) {
-//       token
-//       user {
-//         id
-//         name
-//         email
-//         role
-//         isAdmin
-//       }
-//     }
-//   }
-// `;
 
 
 const RegisterMutation = () => {
@@ -49,32 +33,7 @@ const RegisterMutation = () => {
     setErrorMessage(""); // Clear error message on input change
   }, []);
 
-  const validateForm = () => {
-    if (!formData.name || formData.name.length < 2) {
-      setErrorMessage('Le nom doit contenir au moins 2 caractères');
-      return false;
-    }
-
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(formData.email)) {
-      setErrorMessage('Format d\'email invalide');
-      return false;
-    }
-
-    if (formData.password.length < 8) {
-      setErrorMessage('Le mot de passe doit contenir au moins 8 caractères');
-      return false;
-    }
-
-    if (formData.password !== formData.confirmPassword) {
-      setErrorMessage('Les mots de passe ne correspondent pas');
-      return false;
-    }
-
-    return true;
-  };
-
-
+ 
   const ERROR_MESSAGES = {
   'Invalid credentials': 'Email ou mot de passe incorrect',
   'User not found': 'Aucun compte trouvé avec cet email',
@@ -88,9 +47,9 @@ const RegisterMutation = () => {
   default: 'Une erreur est survenue lors de l\'inscription'
 };
 
-interface Role{
-  role: "ADMIN" | "USER" | "GUEST"
-}
+// interface Role{
+//   role: "ADMIN" | "USER" | "GUEST"
+// }
 
 // const validateRoles: Role[] = [
 //   { role: "ADMIN" },
@@ -132,6 +91,23 @@ interface Role{
   const handleSubmit = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
     
+    // Move validateForm inside handleSubmit
+    const validateForm = () => {
+      if (!formData.name.trim()) {
+        setErrorMessage("Name is required");
+        return false;
+      }
+      if (!formData.email) {
+        setErrorMessage("Email is required");
+        return false;
+      }
+      if (!formData.password) {
+        setErrorMessage("Password is required");
+        return false;
+      }
+      return true;
+    };
+
     if (!validateForm()) return;
 
     try {
@@ -149,8 +125,7 @@ interface Role{
     } catch (error) {
       console.error('Registration error(handleSubmit):', error);
     }
-  }, [formData, registerMutation, validateForm]);
-
+}, [formData, registerMutation]);
   return (
     <div className="min-h-screen bg-background flex items-center justify-center">
       <main className="w-full max-w-md px-4">

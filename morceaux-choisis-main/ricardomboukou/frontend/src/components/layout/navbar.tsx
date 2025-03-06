@@ -7,10 +7,10 @@ import { usePathname, useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Logo } from "@/components/shared/logo";
-import { useState, useEffect, use } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAuth } from "@/contexts/AuthContext";
-import { ROUTES, getAuthorizedRoutes } from "@/config/routes";
+import { getAuthorizedRoutes } from "@/config/routes";
 
 export function Navbar() {
   const router = useRouter(); 
