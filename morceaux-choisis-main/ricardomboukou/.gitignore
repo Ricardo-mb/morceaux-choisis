@@ -5,8 +5,9 @@ node_modules/
 .env.development.local
 .env.test.local
 .env.production.local
+.vscode/
+.qodo/
 npm-debug.log*
 yarn-
 ```
 
-    
