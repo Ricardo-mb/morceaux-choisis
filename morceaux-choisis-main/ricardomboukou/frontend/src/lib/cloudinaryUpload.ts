@@ -1,4 +1,13 @@
-export const uploadToCloudinary = async (file: File, signature: any) => {
+interface CloudinarySignature {
+  apiKey: string;
+  cloudName: string;
+  signature: string;
+  timestamp: string;
+}   
+
+
+
+export const uploadToCloudinary = async (file: File, signature: CloudinarySignature) => {
   if (!file || !signature) {
     throw new Error("File and signature are required for uploading.");
   }

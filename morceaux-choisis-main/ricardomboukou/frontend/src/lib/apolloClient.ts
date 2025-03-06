@@ -44,8 +44,9 @@
 
 
 
-import { ApolloClient, ApolloLink, InMemoryCache, createHttpLink } from "@apollo/client";
+import { ApolloClient, ApolloLink, InMemoryCache, createHttpLink, Reference } from "@apollo/client";
 import { setContext } from "@apollo/client/link/context";
+
 
 const httpLink = createHttpLink({
   uri: process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000/graphql",
@@ -85,9 +86,9 @@ const client = new ApolloClient({
         fields: {
           projects: {
             keyArgs: false, // Use false to indicate no arguments are used for cache key
-            merge(existing = [], incoming, { readField }) {
-              const existingIds = new Set(existing.map((project: any) => readField('id', project)));
-              return [...existing, ...incoming.filter((project: any) => !existingIds.has(readField('id', project)))];
+            merge(existing : Reference[] = [], incoming: Reference[], { readField }) {
+              const existingIds = new Set(existing.map(project => readField<string>('id', project)));
+              return [...existing, ...incoming.filter(project => !existingIds.has(readField<string>('id', project)))];
             },
           },
         },

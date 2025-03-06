@@ -13,19 +13,16 @@ interface User {
   role:  'ADMIN' | 'USER'| 'GUEST';  
 }
 
-interface LoginUserData {
+interface LoginUserData extends User {
   email: string;
   password: string;
-  username: string;
-  isAdmin: boolean;
-  role:  'ADMIN' | 'USER'| 'GUEST';
+  
 }
 
-interface RegisterUserData {
+interface RegisterUserData extends User {  
   email: string;
   password: string;
   username: string;
-  isAdmin: boolean;
   role:  'ADMIN' | 'USER'| 'GUEST';
 }
 
@@ -37,7 +34,7 @@ interface AuthContextType {
   isAdmin: boolean;
   loading: boolean;
   login: (token: string, userData: LoginUserData) => Promise<void>;
-  register: (token: string, userData: any) => Promise<{ success: boolean; token: string; user: any }>;
+  register: (token: string, userData: RegisterUserData) => Promise<{ success: boolean; token: string; user: User }>;
   logout: () => void;
 }
 
@@ -50,7 +47,7 @@ export const AuthContext = createContext<AuthContextType>({
   isAdmin: false,
   loading: false,
   login: async () => {},
-  register: async () => ({ success: false, token: '', user: null }),
+  register: async () => ({ success: false, token: '', user: { id: '', email: '', username: '', isAdmin: false, role: 'USER' } }),
   logout: () => {},
 });
 
@@ -63,7 +60,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const router = useRouter();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<User | null>(null);
   // const isAdmin = user?.isAdmin || false;
 
 
@@ -87,8 +84,8 @@ const login = async (token: string, userData: LoginUserData): Promise<void> => {
   //   setIsAdmin(user.isAdmin);
   // };
 
-  const register = async (token: string, userData: RegisterUserData): Promise<{ success: boolean; token: string; user: any }> => {
-    const user = {...userData, isAdmin: userData.role === 'ADMIN'};
+  const register = async (token: string, userData: RegisterUserData): Promise<{ success: boolean; token: string; user: User }> => {
+    const user: User = {...userData, id: '', isAdmin: userData.role === 'ADMIN'};
     console.log("USER from context", user);
 
     localStorage.setItem('token', token);
@@ -100,7 +97,6 @@ const login = async (token: string, userData: LoginUserData): Promise<void> => {
     return {success : true, token, user};
 
   }
-
   const logout = useCallback(() => {
     localStorage.removeItem('token');
     localStorage.removeItem('user');  

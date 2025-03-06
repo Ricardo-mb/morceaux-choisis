@@ -29,7 +29,7 @@ export default function LogoutPage() {
         >
           <Card className="w-full p-8 space-y-6">
             <div className="space-y-2">
-              <h2 className="text-3xl font-bold">Welcome, {user?.name}</h2>
+              <h2 className="text-3xl font-bold">Welcome, {user?.username}</h2>
               <p className="text-muted-foreground">Your Dashboard</p>
             </div>
             
